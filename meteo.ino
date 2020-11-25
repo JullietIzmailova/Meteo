@@ -1,3 +1,6 @@
+﻿
+//Исходные коды метеостанции
+
 
 #include "DHT.h"
 #include <LiquidCrystal_I2C.h>
@@ -111,11 +114,11 @@ Serial.print(F("Humidity: "));
 Serial.print(h);
 Serial.print(F("% Temperature: "));
 Serial.print(t);
-Serial.print(F("�C "));
+Serial.print(F("°C "));
 Serial.print(f);
-Serial.print(F("�F Heat index: "));
+Serial.print(F("°F Heat index: "));
 Serial.print(hic);
-Serial.print(F("�C "));
+Serial.print(F("°C "));
 Serial.print(hif);
-Serial.println(F("�F"));
+Serial.println(F("°F"));
 }
