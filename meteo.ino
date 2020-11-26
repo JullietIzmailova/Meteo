@@ -1,7 +1,3 @@
-﻿
-//Исходные коды метеостанции
-
-
 #include "DHT.h"
 #include <LiquidCrystal_I2C.h>
 #define DHTPIN 2 // Digital pin connected to the DHT sensor
