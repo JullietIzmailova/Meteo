@@ -39,7 +39,7 @@ Serial.println(F("DHTxx test!"));
 pinMode(6, OUTPUT);
 pinMode(3, OUTPUT);
 pinMode(4, OUTPUT);
-// ваіаіваіаЫвіф
+// ваіаіваіаЫвіф  commit 5
 dht.begin();
 lcd.init(); 
 lcd.createChar(0, drop); 
