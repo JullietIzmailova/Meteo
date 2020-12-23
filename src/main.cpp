@@ -16,6 +16,7 @@
 // tweak the timings for faster processors. This parameter is no longer needed
 // as the current DHT reading algorithm adjusts itself to work on faster procs.
 
+
 byte drop[8] = {
     0b00100,
     0b01010,
@@ -26,7 +27,7 @@ byte drop[8] = {
     0b00000,
     0b00000};
 
-LiquidCrystal_I2C lcd(0x27, 16, 2); // set the LCD address to 0x27 for a 16 chars and 2 line display
+LiquidCrystal_I2C lcd(0x27, 20, 4); // set the LCD address to 0x27 for a 20 chars and 4 line display
 void setup()
 {
   Serial.begin(9600);
@@ -78,20 +79,21 @@ void loop()
   int L = analogRead(A5);
   lcd.setCursor(0, 0);
   lcd.print("T " + String(DHTTemperature()));
-  lcd.print("C");
+  lcd.print(" ");
   lcd.print(char(223));
+  lcd.print("C");
   lcd.print(" L " + String(L));
   lcd.setCursor(0, 1);
   lcd.write(byte(0));
   lcd.print(" " + String(DHTHumidity()));
-  lcd.print("% H " + String(hic));
+  lcd.print(" %  H " + String(hic));
 
   Serial.println(L);
   Serial.print(F("Humidity: "));
   Serial.print(DHTHumidity());
-  Serial.print(F("% Temperature: "));
+  Serial.print(F(" % Temperature: "));
   Serial.print(DHTTemperature());
-  Serial.print(F("°C "));
+  Serial.print(F(" °C "));
   Serial.print(hic);
 
 }
