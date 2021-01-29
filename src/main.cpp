@@ -87,7 +87,7 @@ void loop()
   lcd.write(byte(0));
   lcd.print(" " + String(DHTHumidity()));
   lcd.print(" %  H " + String(hic));
-  lcd.setCursor(0, 2);
+  lcd.setCursor(7, 3);
   lcd.print("(o_0)");
 
   Serial.println(L);
