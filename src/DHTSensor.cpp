@@ -5,14 +5,14 @@ DHT *dht = nullptr;
 
 //true если сенсор доступен
 //false если сенсор не доступен
-bool DHTInit()
+bool DHT_Setup()
 {
-    dht = new DHT(DHTPIN, DHTTYPE);
+    dht = new DHT(DHT_PIN, DHT_TYPE);
     dht->begin();
-    return DHTAvailable();
+    return DHT_Get_Status();
 }
 
-bool DHTAvailable()
+bool DHT_Get_Status()
 {
   float h = dht->readHumidity();
 
@@ -26,17 +26,17 @@ bool DHTAvailable()
   }
 }
 
-float DHTTemperature()
+float DHT_Get_Temperature()
 {
   return dht->readTemperature();    
 }
 
-float DHTHumidity()
+float DHT_Get_Humidity()
 {
   return dht->readHumidity();  
 }
 
-float DHTHeatIndex()
+float DHT_Get_HeatIndex()
 {
   return dht->computeHeatIndex(false);
 }
