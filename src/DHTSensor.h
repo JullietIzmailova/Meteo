@@ -13,3 +13,4 @@ float DHT_Get_Temperature();
 float DHT_Get_Humidity();
 
 float DHT_Get_Heat_Index();
+      

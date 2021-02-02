@@ -36,7 +36,7 @@ float DHT_Get_Humidity()
   return dht->readHumidity();  
 }
 
-float DHT_Get_HeatIndex()
+float DHT_Get_Heat_Index()
 {
   return dht->computeHeatIndex(false);
 }
