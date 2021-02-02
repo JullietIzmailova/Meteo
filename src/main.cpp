@@ -4,6 +4,7 @@
 #include "DHTSensor.h"
 #include "LCDActuator.h"
 #include "LEDActuator.h" 
+#include "LIGHTActuator.h"
 
 //Setup section -------------------------------
 void setup()
@@ -13,6 +14,8 @@ void setup()
   
   Log("Do setup...");
   
+  LIGHT_Setup();
+
   LED_Setup();
 
   DHT_Setup();
@@ -21,6 +24,7 @@ void setup()
   LCD_Set_Light(true);
   LCD_Print_Line1("Hello");
   LCD_Print_Line3("wait...");
+
 
   Log("Setup complete");
 }
@@ -51,6 +55,8 @@ void loop()
   }
 
   int L = analogRead(A5);
+
+  int LIGHT_data = LIGHT_GET_data(); 
 
   LCD_Print_Line1("Temp ====> " + String(DHT_Get_Temperature()) + char(223) + "C");
   LCD_Print_Line2("Hum =====> " + String(DHT_Get_Humidity()) + " %");

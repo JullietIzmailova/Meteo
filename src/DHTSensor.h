@@ -6,6 +6,7 @@ bool DHT_Setup();
 
 //true если сенсор доступен
 //false если сенсор не доступен
+
 bool DHT_Get_Status();
 
 float DHT_Get_Temperature();
