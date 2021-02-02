@@ -28,7 +28,7 @@
 #define LED_YELLOW_PIN 6
 
 //LIGHT SENSOR Define section 
-#define LIGHT_SENSOR_ANALOG_PIN 13
+#define LIGHT_SENSOR_ANALOG_PIN A0
 #define LIGHT_SENSOR_DIGITAL_PIN -1
 
 #endif

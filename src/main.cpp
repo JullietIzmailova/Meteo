@@ -6,7 +6,6 @@
 #include "LEDActuator.h" 
 #include "LIGHTActuator.h"
 
-int LIGHT_data=0;
 
 //Setup section -------------------------------
 void setup()
@@ -58,10 +57,14 @@ void loop()
 
   int L = analogRead(A5);
 
-  LIGHT_data = LIGHT_GET_data(); 
+  LIGHT_GET_data();
+
+  //LIGHT_data = LIGHT_GET_data(); 
 
   LCD_Print_Line1("Temp ====> " + String(DHT_Get_Temperature()) + char(223) + "C");
   LCD_Print_Line2("Hum =====> " + String(DHT_Get_Humidity()) + " %");
   LCD_Print_Line3("curr Hi => " + String(current_heat_index));
-  LCD_Print_Line4("L => " + String(L) + " LIGHT => " + LIGHT_data);
+  //LCD_Print_Line4("L => " + String(L) + " LIGHT => " + PHOTO);
+  LCD_Print_Line4("PHOTO ===> " + LIGHT_GET_data());
+
 }
