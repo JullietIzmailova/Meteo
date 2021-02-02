@@ -48,17 +48,15 @@ bool LIGHT_SENSOR_DIGITAL_Setup()
 
 float LIGHT_GET_data()
 {
-    int raw = -1;
 
     if(LIGHT_SENSOR_ANALOG_PIN!=-1){
-        raw = analogRead(LIGHT_SENSOR_ANALOG_PIN) * 0.48 / 100;         
+        return analogRead(LIGHT_SENSOR_ANALOG_PIN) * 0.48 / 100;         
     }
     if(LIGHT_SENSOR_DIGITAL_PIN!=1){
-        raw = digitalRead(LIGHT_SENSOR_DIGITAL_PIN) * 0.48 / 100;
+        return digitalRead(LIGHT_SENSOR_DIGITAL_PIN);
+    }
+    else {
+        return -1;
     }
 
-   Log("LIGHT sensor data " + String(raw));
-
-   return raw;
 }
-

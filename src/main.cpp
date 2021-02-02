@@ -55,14 +55,8 @@ void loop()
 
   int L = analogRead(A5);
 
-  //int LIGHT_data = LIGHT_GET_data();
-  //int P_data = analogRead(A1);
-  //float u = P_data * 0.48 / 100;
-
   LCD_Print_Line1("Temp ====> " + String(DHT_Get_Temperature()) + char(223) + "C");
   LCD_Print_Line2("Hum =====> " + String(DHT_Get_Humidity()) + " %");
   LCD_Print_Line3("curr Hi => " + String(current_heat_index));
-  //LCD_Print_Line4("L => " + String(L) + " LIGHT => " + PHOTO);
-  //LCD_Print_Line4("L => "+ String(L) + " P => " + String(u));
-  LCD_Print_Line4("L => "+ String(L) + " P => " + String(LIGHT_GET_data()));
+  LCD_Print_Line4("L => "+ String(L) + " Ph => " + String(LIGHT_GET_data()));
 }
