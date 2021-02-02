@@ -1,11 +1,6 @@
-
 //Исходные коды метеостанции
 #include "DHTSensor.h"
 #include "LCDActuator.h"
-
-
-
-
     
 //Setup section -------------------------------
 void setup()

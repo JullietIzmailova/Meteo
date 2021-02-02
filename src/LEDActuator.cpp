@@ -1,29 +1,34 @@
 #include "config.h"
 #include "LEDActuator.h"
+#include <Arduino.h>
 
-LED_Setup()
+bool LED_Setup()
 {
-    LED_RED = new pinMode(LED_RED_PIN, OUTPUT);
-    LED_GREEN = new pinMode(LED_GREEN_PIN, OUTPUT);
-    LED_YELLOW = new pinMode(LED_YELLOW_PIN, OUTPUT);
+    LED_RED_Setup();
+    LED_GREEN_Setup();
+    LED_YELLOW_Setup();
+    return true;
 }
 
-/*
+
 bool LED_RED_Setup()
 {
     pinMode(LED_RED_PIN, OUTPUT);
+    return true;
 }
 
 bool LED_GREEN_Setup()
 {
     pinMode(LED_GREEN_PIN, OUTPUT);
+    return true;
 }
 
 bool LED_YELLOW_Setup()
 {
     pinMode(LED_YELLOW_PIN, OUTPUT);
+    return true;
 }
-*/
+
 
 void LED_Red_Set_Light(bool on)
 {
