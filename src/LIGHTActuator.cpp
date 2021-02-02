@@ -46,7 +46,7 @@ bool LIGHT_SENSOR_DIGITAL_Setup()
     }
 }
 
-int LIGHT_GET_data()
+float LIGHT_GET_data()
 {
     int raw = -1;
 
