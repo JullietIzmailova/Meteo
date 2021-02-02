@@ -1,6 +1,14 @@
 #include "config.h"
 #include "LEDActuator.h"
 
+LED_Setup()
+{
+    LED_RED = new pinMode(LED_RED_PIN, OUTPUT);
+    LED_GREEN = new pinMode(LED_GREEN_PIN, OUTPUT);
+    LED_YELLOW = new pinMode(LED_YELLOW_PIN, OUTPUT);
+}
+
+/*
 bool LED_RED_Setup()
 {
     pinMode(LED_RED_PIN, OUTPUT);
@@ -15,6 +23,7 @@ bool LED_YELLOW_Setup()
 {
     pinMode(LED_YELLOW_PIN, OUTPUT);
 }
+*/
 
 void LED_Red_Set_Light(bool on)
 {
