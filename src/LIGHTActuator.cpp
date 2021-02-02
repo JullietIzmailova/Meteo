@@ -53,7 +53,12 @@ float LIGHT_GET_data()
         return analogRead(LIGHT_SENSOR_ANALOG_PIN) * 0.48 / 100;         
     }
     if(LIGHT_SENSOR_DIGITAL_PIN!=1){
-        return digitalRead(LIGHT_SENSOR_DIGITAL_PIN);
+        if(digitalRead(LIGHT_SENSOR_DIGITAL_PIN)==HIGH){
+            return 1;
+        }
+        if(digitalRead(LIGHT_SENSOR_DIGITAL_PIN)==LOW){
+            return 0;
+        }
     }
     else {
         return -1;
