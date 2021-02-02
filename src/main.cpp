@@ -1,15 +1,20 @@
 //Исходные коды метеостанции
 #include "DHTSensor.h"
 #include "LCDActuator.h"
-    
+#include "LEDActuator.h" 
+
 //Setup section -------------------------------
 void setup()
 {
   Serial.begin(9600);
   Serial.println(F("DHTxx test!"));
+  /*
   pinMode(6, OUTPUT);
   pinMode(3, OUTPUT);
   pinMode(4, OUTPUT);
+*/
+ 
+  LED_Setup();
 
   DHT_Setup();
 
