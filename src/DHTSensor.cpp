@@ -1,15 +1,26 @@
-#include "DHTSensor.h"
 #include "config.h"
+#include "Log.h"
+#include "DHTSensor.h"
+
 
 DHT *dht = nullptr;
 
 //true если сенсор доступен
 //false если сенсор не доступен
 bool DHT_Setup()
-{
+{  
     dht = new DHT(DHT_PIN, DHT_TYPE);
     dht->begin();
-    return DHT_Get_Status();
+    if (DHT_Get_Status())
+    {
+      Log("DHT setup complete");
+      return true;
+    }
+    else 
+    {
+      Log("DHT setup failed");
+      return false;
+    }
 }
 
 bool DHT_Get_Status()

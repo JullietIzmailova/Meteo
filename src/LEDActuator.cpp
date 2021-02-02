@@ -1,4 +1,5 @@
 #include "config.h"
+#include "Log.h"
 #include "LEDActuator.h"
 #include <Arduino.h>
 
@@ -7,6 +8,7 @@ bool LED_Setup()
     LED_RED_Setup();
     LED_GREEN_Setup();
     LED_YELLOW_Setup();
+    Log("Led setup complete");
     return true;
 }
 
@@ -65,6 +67,26 @@ void LED_Yellow_Set_Light(bool on)
     else
     {
         digitalWrite(LED_YELLOW_PIN, LOW);
-    }
-    
+    }    
+}
+
+void LED_Only_Red_Set_Light()
+{
+    LED_Red_Set_Light(true);
+    LED_Green_Set_Light(false);
+    LED_Yellow_Set_Light(false);
+}
+
+void LED_Only_Green_Set_Light()
+{
+    LED_Red_Set_Light(false);
+    LED_Green_Set_Light(true);
+    LED_Yellow_Set_Light(false);
+}
+
+void LED_Only_Yellow_Set_Light()
+{
+    LED_Red_Set_Light(false);
+    LED_Green_Set_Light(false);
+    LED_Yellow_Set_Light(true);
 }
