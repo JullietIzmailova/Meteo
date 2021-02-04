@@ -3,16 +3,19 @@
 #include "log.h"
 #include "DHTSensor.h"
 #include "LCDActuator.h"
-#include "LEDActuator.h" 
+#include "LEDActuator.h"
+#include "LIGHTActuator.h"
 
 //Setup section -------------------------------
 void setup()
-{  
+{
   Serial.begin(SERIAL_BAUD);
   delay(SETUP_DELAY);
-  
+
   Log("Do setup...");
-  
+
+  LIGHT_Setup();
+
   LED_Setup();
 
   DHT_Setup();
@@ -47,13 +50,13 @@ void loop()
   }
   else
   {
-      LED_Only_Green_Set_Light();
+    LED_Only_Green_Set_Light();
   }
 
   int L = analogRead(A5);
 
-  LCD_Print_Line1("T " + String(DHT_Get_Temperature()));
-  LCD_Print_Line2(" " + String(DHT_Get_Humidity()));
-  LCD_Print_Line3(" %  H " + String(current_heat_index));
-  LCD_Print_Line4(" L " + String(L));
+  LCD_Print_Line1("Temp ====> " + String(DHT_Get_Temperature()) + char(223) + "C");
+  LCD_Print_Line2("Hum =====> " + String(DHT_Get_Humidity()) + " %");
+  LCD_Print_Line3("curr Hi => " + String(current_heat_index));
+  LCD_Print_Line4("L => "+ String(L) + " Ph => " + String(LIGHT_GET_data()));
 }
