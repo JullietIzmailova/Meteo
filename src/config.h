@@ -29,7 +29,10 @@
 
 //LIGHT SENSOR Define section 
 #define LIGHT_SENSOR_ANALOG_PIN A2
+
+#ifndef LIGHT_SENSOR_ANALOG_PIN
 #define LIGHT_SENSOR_DIGITAL_PIN -1
+#endif
 
 #endif
 
