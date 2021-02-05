@@ -34,6 +34,9 @@
 #define LIGHT_SENSOR_DIGITAL_PIN -1
 #endif
 
+//BUZZER Define section
+#define BUZZER_PIN A0
+
 #endif
 
 

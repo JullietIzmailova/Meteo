@@ -5,6 +5,7 @@
 #include "LCDActuator.h"
 #include "LEDActuator.h"
 #include "LIGHTActuator.h"
+#include "BUZZERActuator.h"
 
 //Setup section -------------------------------
 void setup()
@@ -13,6 +14,8 @@ void setup()
   delay(SETUP_DELAY);
 
   Log("Do setup...");
+
+  BUZZER_Setup();
 
   LIGHT_Setup();
 
