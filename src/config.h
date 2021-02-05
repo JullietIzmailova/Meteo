@@ -6,7 +6,9 @@
 
 #define SERIAL_BAUD 9600
 #define SETUP_DELAY 100
-#define MAIN_LOOP_DELAY 2000
+
+#define MAIN_LOOP_DELAY 20
+#define MAIN_LOOP_COUNT_LIMIT 1000
 
 #define HEAT_INDEX_LEVEL_LOW 27
 #define HEAT_INDEX_LEVEL_HIGH 30
@@ -35,7 +37,7 @@
 #endif
 
 //BUZZER Define section
-#define BUZZER_PIN A0
+#define BUZZER_PIN 7
 
 #endif
 
