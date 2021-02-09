@@ -1,7 +1,9 @@
 #include <Arduino.h>
 #include "Log.h"
 
-void Log(String text)
+inline void Log(String text)
 {
+#ifdef DBG_CONSOLE_ENABLE
     Serial.println(text);
+#endif
 }
