@@ -8,4 +8,4 @@ DHT sensor library 1.3.4: https://github.com/adafruit/DHT-sensor-library
 
 LiquidCrystal_I2C 1.1.4: https://github.com/marcoschwartz/LiquidCrystal_I2C
 
-
+https://github.com/jarzebski/Arduino-DS3231

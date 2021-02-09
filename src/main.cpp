@@ -48,6 +48,7 @@ Hello Screen.
 #include "LEDActuator.h"
 #include "LIGHTActuator.h"
 #include "BUZZERActuator.h"
+#include "src/libraries/DS3231/DS3231.h"
 
 #define MENU_ITEMS_SIZE 2
 String Menu_Items[] = {"Item 1", "Item 2", "Item 3"};
@@ -94,6 +95,10 @@ int Button3_StateTicker = 0;
 // button setup
 #define BUTTON_SHORTPRESS_LIMIT 10
 #define BUTTON_LONGPRESS_LIMIT 100
+
+//CLOCK ----------------
+DS3231 clock;
+RTCDateTime dt;
 
 //--------------------------------------------------------------------------------
 //-------------------------------MAIN Loop Section -------------------------------
@@ -220,6 +225,11 @@ void setup()
 
   Log("Do setup...");
 
+  //CLOCK 
+  clock.begin();
+  // Set sketch compiling time
+  clock.setDateTime(__DATE__, __TIME__);  
+
   //  Setup buttons
   pinMode(9, INPUT_PULLUP);
   pinMode(10, INPUT_PULLUP);
@@ -298,7 +308,9 @@ void loop()
     if (Button2_EventShortPress == true)
     {
       ///
+
       Log("btn2 Short press");
+
       Menu_Selected_Index--;
     }
 
@@ -341,11 +353,30 @@ void loop()
   {
     Log("Slow loop");
     Loop_Count = 0;
+//CLOCK
+  dt = clock.getDateTime();
+
+  // For leading zero look to DS3231_dateformat example
+
+  Serial.print("Raw data: ");
+  Serial.print(dt.year);   Serial.print("-");
+  Serial.print(dt.month);  Serial.print("-");
+  Serial.print(dt.day);    Serial.print(" ");
+  Serial.print(dt.hour);   Serial.print(":");
+  Serial.print(dt.minute); Serial.print(":");
+  Serial.print(dt.second); Serial.println("");
+  
+//ENDOF CLOCK
 
     if (Screen_Mode == DATA_MODE)
     {
 
       LCD_Clear();
+
+      //CLOCK
+      String dateTime = String(dt.day) + "." + String(dt.month) + "." + String(dt.year) 
+      + " " + String(dt.hour) + ":" + String(dt.minute) + ":" + String(dt.second) + dt.dayOfWeek; 
+      LCD_Print_Line1(dateTime);      
 
       float current_heat_index = DHT_Get_Heat_Index();
 
@@ -374,8 +405,9 @@ void loop()
       //работаем с Bool снятого с цифрового пина
       LCD_Print_Line4("A => " + String(lightValue) + " Ph => " + String(LIGHT_GET_data()));
 #endif
-
-      LCD_Print_Line1("Temp ====> " + String(DHT_Get_Temperature()) + char(223) + "C");
+ clock.forceConversion();
+ Log(String(clock.readTemperature()) + " " +  String(DHT_Get_Temperature()));
+  //    LCD_Print_Line1("Temp ====> " + String(DHT_Get_Temperature()) + char(223) + "C");
       LCD_Print_Line2("Hum =====> " + String(DHT_Get_Humidity()) + " %");
       LCD_Print_Line3("curr Hi => " + String(current_heat_index));
     }
