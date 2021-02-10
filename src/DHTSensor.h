@@ -1,4 +1,4 @@
-#include "src/libraries/DHT_sensor_library/DHT.h"
+#include "libraries/DHT_sensor_library/DHT.h"
 
 //true если сенсор доступен
 //false если сенсор не доступен
