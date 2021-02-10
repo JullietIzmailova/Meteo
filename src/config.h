@@ -13,7 +13,17 @@
 #define HEAT_INDEX_LEVEL_LOW 27
 #define HEAT_INDEX_LEVEL_HIGH 30
 
+#define MENU_ITEMS_SIZE 3  // capacity of array Menu_Items
 
+// Button setup
+#define BUTTON_SHORTPRESS_LIMIT 10
+#define BUTTON_LONGPRESS_LIMIT 100
+
+// Screen modes
+#define METEO_MODE 0
+#define MENU_MODE  1
+#define CLOCK_MODE 2
+#define GRAPH_MODE 3
 
 //DHT Define section
 #define DHT_PIN 2
