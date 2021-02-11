@@ -48,6 +48,10 @@ Hello Screen.
 #include "LEDActuator.h"
 #include "LIGHTActuator.h"
 #include "BUZZERActuator.h"
+//#include "Main.h"
+#include "Buttons.h"
+
+
 
 #define MENU_ITEMS_SIZE 2
 String Menu_Items[] = {"Item 1", "Item 2", "Item 3"};
@@ -61,169 +65,23 @@ int Screen_Mode = DATA_MODE;
 
 int Loop_Count = MAIN_LOOP_COUNT_LIMIT;
 
-// BUTTON 1
-// Button events
-bool Button1_EventShortPress = false;
-bool Button1_EventLongPress = false;
-
-// Button states
-bool Button1_Pressed = false;
-bool Button1_LastState = false;
-int Button1_StateTicker = 0;
-
-// BUTTON2
-// Button events
-bool Button2_EventShortPress = false;
-bool Button2_EventLongPress = false;
-
-// Button states
-bool Button2_Pressed = false;
-bool Button2_LastState = false;
-int Button2_StateTicker = 0;
-
-// BUTTON3
-// Button events
-bool Button3_EventShortPress = false;
-bool Button3_EventLongPress = false;
-
-// Button states
-bool Button3_Pressed = false;
-bool Button3_LastState = false;
-int Button3_StateTicker = 0;
-
-// button setup
-#define BUTTON_SHORTPRESS_LIMIT 10
-#define BUTTON_LONGPRESS_LIMIT 100
 
 //--------------------------------------------------------------------------------
 //-------------------------------MAIN Loop Section -------------------------------
 //--------------------------------------------------------------------------------
 
-void ReadButtonStates()
-{
-  Button1_Pressed = digitalRead(9);
-  Button2_Pressed = digitalRead(10);
-  Button3_Pressed = digitalRead(11);
 
-  // ... all buttons
-}
-
-void ResetEvents()
-{
-  Button1_EventShortPress = false;
-  Button1_EventLongPress = false;
-
-  Button2_EventShortPress = false;
-  Button2_EventLongPress = false;
-
-  Button3_EventShortPress = false;
-  Button3_EventLongPress = false;
-}
-
-void RaiseEvents()
-{
-  ResetEvents();
-
-  // _________________Raise button events______________________________
-
-  // _______Button1 events_________
-  if (Button1_LastState == Button1_Pressed)
-  {
-    Button1_StateTicker++;
-  }
-  else
-  {
-    Button1_StateTicker = 0;
-  }
-
-  if (Button1_Pressed == true)
-  {
-
-    if (Button1_StateTicker == BUTTON_SHORTPRESS_LIMIT)
-    {
-      Button1_EventShortPress = true;
-    }
-
-    if (Button1_StateTicker == BUTTON_LONGPRESS_LIMIT)
-    {
-      Button1_EventLongPress = true;
-    }
-  }
-
-  Button1_LastState = Button1_Pressed;
-
-  //______________________________
-
-  // _______Button2 events_________
-
-  if (Button2_LastState == Button2_Pressed)
-  {
-    Button2_StateTicker++;
-  }
-  else
-  {
-    Button2_StateTicker = 0;
-  }
-
-  if (Button2_Pressed == true)
-  {
-
-    if (Button2_StateTicker == BUTTON_SHORTPRESS_LIMIT)
-    {
-      Button2_EventShortPress = true;
-    }
-
-    if (Button2_StateTicker == BUTTON_LONGPRESS_LIMIT)
-    {
-      Button2_EventLongPress = true;
-    }
-  }
-
-  Button2_LastState = Button2_Pressed;
-
-  //______________________________
-
-  // _______Button3 events_________
-  if (Button3_LastState == Button3_Pressed)
-  {
-    Button3_StateTicker++;
-  }
-  else
-  {
-    Button3_StateTicker = 0;
-  }
-
-  if (Button3_Pressed == true)
-  {
-
-    if (Button3_StateTicker == BUTTON_SHORTPRESS_LIMIT)
-    {
-      Button3_EventShortPress = true;
-    }
-
-    if (Button3_StateTicker == BUTTON_LONGPRESS_LIMIT)
-    {
-      Button3_EventLongPress = true;
-    }
-  }
-
-  Button3_LastState = Button3_Pressed;
-
-  //______________________________
-}
 
 //Setup section -------------------------------
 void setup()
 {
   Serial.begin(SERIAL_BAUD);
   delay(SETUP_DELAY);
+  
 
   Log("Do setup...");
 
-  //  Setup buttons
-  pinMode(9, INPUT_PULLUP);
-  pinMode(10, INPUT_PULLUP);
-  pinMode(11, INPUT_PULLUP);
+  Buttons_Setup();
 
   // Setup beeper
   BUZZER_Setup();
@@ -248,22 +106,11 @@ void loop()
 {
   // Wait a few seconds between measurements.
   delay(MAIN_LOOP_DELAY);
+  
+  Buttons_Loop();
+  
 
-  ReadButtonStates();
-
-  RaiseEvents();
-
-  // TO DO (EVENTS HANDLERS)
-  //........
-
-  //----BUTTON1 HANDLERS-------------------
-  /*
-    DoButton1Press();
-    DoButton2Press();
-    DoButton3Press();
-    */
-
-  if (Button1_EventLongPress == true)
+  if (Get_Button1_LongPress() == true)
   {
     ///
     Log("btn1 Long press");
@@ -285,7 +132,7 @@ void loop()
   //Draw menu items
   if (Screen_Mode == MENU_MODE)
   {
-    if (Button1_EventShortPress == true)
+    if (Get_Button1_ShortPress() == true)
     {
       ///
       Log("btn1 Short press");
@@ -295,7 +142,7 @@ void loop()
 
     //----BUTTON2 HANDLERS------------------
 
-    if (Button2_EventShortPress == true)
+    if (Get_Button2_ShortPress() == true)
     {
       ///
       Log("btn2 Short press");
@@ -306,7 +153,7 @@ void loop()
 
     //----BUTTON3 HANDLERS------------------
 
-    if (Button3_EventShortPress == true)
+    if (Get_Button3_ShortPress() == true)
     {
       ///
       Log("btn3 Short press");

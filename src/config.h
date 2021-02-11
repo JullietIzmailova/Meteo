@@ -39,6 +39,15 @@
 //BUZZER Define section
 #define BUZZER_PIN 7
 
+// button setup
+#define BUTTON_SHORTPRESS_LIMIT 10
+#define BUTTON_LONGPRESS_LIMIT 100
+
+#define BUTTON1_PIN 9
+#define BUTTON2_PIN 10
+#define BUTTON3_PIN 11
+
+
 #endif
 
 
