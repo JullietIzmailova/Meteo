@@ -4,6 +4,14 @@
 
 //Main Define
 
+#define MODE_NULL -1
+#define MODE_METEO 0
+#define MODE_MENU 1
+#define MODE_CLOCK 2
+
+void Set_Current_Screen(int new_mode);
+int Get_Current_Screen();
+
 #define SERIAL_BAUD 9600
 #define SETUP_DELAY 100
 
