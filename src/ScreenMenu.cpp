@@ -22,7 +22,8 @@ void Screen_Menu_Read_Buttons()
     if (Get_Button1_LongPress() == true)
     {
         Log("Got to Meteo");
-        Set_Current_Screen(MODE_METEO);        
+        
+        Set_Current_Screen(MODE_CLOCK);        
     }
 
     if (Get_Button1_ShortPress() == true)
