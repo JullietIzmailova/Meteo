@@ -26,6 +26,7 @@ int Get_Current_Screen();
 //DHT Define section
 #define DHT_PIN 2
 #define DHT_TYPE DHT22 
+#define DHT_TYPE DHT11
 
 //LCD Define siction
 #define LCD_PORT 0x27
