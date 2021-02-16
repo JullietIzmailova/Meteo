@@ -1,18 +1,29 @@
-#include "DHTSensor.h"
 #include "config.h"
+#include "Log.h"
+#include "DHTSensor.h"
+
 
 DHT *dht = nullptr;
 
 //true если сенсор доступен
 //false если сенсор не доступен
-bool DHTInit()
-{
-    dht = new DHT(DHTPIN, DHTTYPE);
+bool DHT_Setup()
+{  
+    dht = new DHT(DHT_PIN, DHT_TYPE);
     dht->begin();
-    return DHTAvailable();
+    if (DHT_Get_Status())
+    {
+      Log("DHT setup complete");
+      return true;
+    }
+    else 
+    {
+      Log("DHT setup failed");
+      return false;
+    }
 }
 
-bool DHTAvailable()
+bool DHT_Get_Status()
 {
   float h = dht->readHumidity();
 
@@ -26,17 +37,17 @@ bool DHTAvailable()
   }
 }
 
-float DHTTemperature()
+float DHT_Get_Temperature()
 {
   return dht->readTemperature();    
 }
 
-float DHTHumidity()
+float DHT_Get_Humidity()
 {
   return dht->readHumidity();  
 }
 
-float DHTHeatIndex()
+float DHT_Get_Heat_Index()
 {
   return dht->computeHeatIndex(false);
 }

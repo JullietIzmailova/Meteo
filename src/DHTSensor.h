@@ -2,14 +2,16 @@
 
 //true если сенсор доступен
 //false если сенсор не доступен
-bool DHTInit();
+bool DHT_Setup();
 
 //true если сенсор доступен
 //false если сенсор не доступен
-bool DHTAvailable();
 
-float DHTTemperature();
+bool DHT_Get_Status();
 
-float DHTHumidity();
+float DHT_Get_Temperature();
 
-float DHTHeatIndex();
+float DHT_Get_Humidity();
+
+float DHT_Get_Heat_Index();
+      

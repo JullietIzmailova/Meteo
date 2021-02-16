@@ -1,101 +1,155 @@
+/* Архитектура меню 
+Buttons map, слева на право:
+            at screen\at menu
+- Button1 - Menu     \Back - Режим
+- Button2 -   *      \Select item
+- Button3 -   *      \Set item
+
+Пункты меню. 
+Meteo->
+	->Celsium
+	->Graph
+	->Digital
+Clock->
+	->Set date - скрин редактирования времени, по окончанию назад в меню, а потом назад в скрин. 
+	->Set time - появляется экран редактирования времени - выход длительное нажатие меню. 
+               и возврат назад в меню на этот же пункт откуда я вызвал. 
+               Нажание Manu/Back возврат к скрину откуда вызвано меню. 
+	->Set 24/12 [24] ? где запомнить 
+	->Graph      - сразу в часы в графическом режиме - назад по меню не вернутся. 
+	->Digital
+Alarm->
+	->Alarm set
+	->Alarm on
+	->Timer set
+	->Timer on
+-- три разновидности подпунктов
+- меняю сразу и остаемся в меню. 
+- вызывают скрин setup и возврат в меню, потом к скрину. 
+- сразу переключению в скрин.   
+
+Если в режиме экрана, нажать Меню (кнопку) появится первый пункт верхнего уровня меню. 
+- Перебор пунктов Select (Button2).
+- Выбор пункта - Set.
+Для подпунктов:
+- Set выбор пункта. 
+- Возврат из пункта в меню кнопка Menu.
+- Кнопка Menu в самом Menu это на уровень выше и Back.
+
+
+Включение. 
+Hello Screen.
+Диагностика, по окончанию 
+ - OK переход в режим Метеостанция
+ -- сенсоры, мигнуть диодами, бузер. 
+ - Error сообщения об ошибках (коды ошибок?) ожидания любой клавиши, после чего в Метеостанцию. 
+
+-- Метеостанция
+- Button1 меню. 
+
+
+
+
+------------------------------- */
 
 //Исходные коды метеостанции
+#include "config.h"
+#include "log.h"
 #include "DHTSensor.h"
-#include "src/libraries/LiquidCrystal_I2C/LiquidCrystal_I2C.h"
+#include "LCDActuator.h"
+#include "LEDActuator.h"
+#include "LIGHTActuator.h"
+#include "BUZZERActuator.h"
+#include "Clock.h"
 
+#include "Buttons.h"
 
-// Connect pin 1 (on the left) of the sensor to +5V
-// NOTE: If using a board with 3.3V logic like an Arduino Due connect pin 1
-// to 3.3V instead of 5V!
-// Connect pin 2 of the sensor to whatever your DHTPIN is
-// Connect pin 4 (on the right) of the sensor to GROUND
-// Connect a 10K resistor from pin 2 (data) to pin 1 (power) of the sensor
+#include "ScreenMenu.h"
+#include "ScreenMeteo.h"
+#include "ScreenClock.h"
 
-// Initialize DHT sensor.
-// Note that older versions of this library took an optional third parameter to
-// tweak the timings for faster processors. This parameter is no longer needed
-// as the current DHT reading algorithm adjusts itself to work on faster procs.
+int Loop_Count = MAIN_LOOP_COUNT_LIMIT;
 
-
-byte drop[8] = {
-    0b00100,
-    0b01010,
-    0b10001,
-    0b10001,
-    0b10001,
-    0b01110,
-    0b00000,
-    0b00000};
-
-LiquidCrystal_I2C lcd(0x27, 20, 4); // set the LCD address to 0x27 for a 20 chars and 4 line display
+//Setup section -------------------------------
 void setup()
 {
-  Serial.begin(9600);
-  Serial.println(F("DHTxx test!"));
-  pinMode(6, OUTPUT);
-  pinMode(3, OUTPUT);
-  pinMode(4, OUTPUT);
-
-  DHTInit();
-
-  lcd.init();
-  lcd.createChar(0, drop);
-  lcd.backlight();
-  lcd.setCursor(5, 0);
-  lcd.print("hello");
-  lcd.setCursor(4, 1);
-  lcd.print("wait...");
+  Serial.begin(SERIAL_BAUD);
+  delay(SETUP_DELAY);
+  Log("Do setup...");
+  Buttons_Setup();
+  // Setup beeper
+  BUZZER_Setup();
+  // Setup light bulbs
+  LIGHT_Setup();
+  LED_Setup();
+  DHT_Setup();
+  Clock_Setup();
+  // Setup screen
+  LCD_Setup();
+  LCD_Set_Light(true);
+  LCD_Print_Line1("Hello");
+  LCD_Print_Line3("wait...");
+  Log("Setup complete");
 }
+
+int Saved_Mode = MODE_NULL;
 
 void loop()
 {
   // Wait a few seconds between measurements.
-  delay(2000);
-  lcd.clear();
+  delay(MAIN_LOOP_DELAY);
 
-  float hic = DHTHeatIndex();
-
-  if (hic > 27)
+  if (Saved_Mode != Get_Current_Screen())
   {
-    if (hic > 30)
+    switch (Get_Current_Screen())
     {
-      digitalWrite(6, 1);
-      digitalWrite(4, 0);
-      digitalWrite(3, 0);
-    }
-    else
-    {
-      digitalWrite(6, 0);
-      digitalWrite(4, 1);
-      digitalWrite(3, 0);
+    case MODE_MENU:
+      Screen_Menu_Init();
+      break;
+    case MODE_METEO:
+      Screen_Meteo_Init();
+      break;
+    case MODE_CLOCK:
+      Screen_Clock_Init();
+      break;
+
     }
   }
-  else
+
+  Saved_Mode = Get_Current_Screen();
+
+  Buttons_Loop();
+
+  switch (Get_Current_Screen())
   {
-    digitalWrite(6, 0);
-    digitalWrite(4, 0);
-    digitalWrite(3, 1);
+  case MODE_MENU:
+    Screen_Menu_Read_Buttons();
+    break;
+  case MODE_METEO:
+    Screen_Meteo_Read_Buttons();
+    break;
+  case MODE_CLOCK:
+    Screen_Clock_Read_Buttons();
+    break;
   }
-  int L = analogRead(A5);
-  lcd.setCursor(0, 0);
-  lcd.print("T " + String(DHTTemperature()));
-  lcd.print(" ");
-  lcd.print(char(223));
-  lcd.print("C");
-  lcd.print(" L " + String(L));
-  lcd.setCursor(0, 1);
-  lcd.write(byte(0));
-  lcd.print(" " + String(DHTHumidity()));
-  lcd.print(" %  H " + String(hic));
-  lcd.setCursor(0, 2);
-  lcd.printRight("(o_0)");
 
-  Serial.println(L);
-  Serial.print(F("Humidity: "));
-  Serial.print(DHTHumidity());
-  Serial.print(F(" % Temperature: "));
-  Serial.print(DHTTemperature());
-  Serial.print(F(" °C "));
-  Serial.print(hic);
+  //Slow loop
+  Loop_Count++;
+  if (Loop_Count > MAIN_LOOP_COUNT_LIMIT)
+  {
+    Loop_Count = 0;
 
+    switch (Get_Current_Screen())
+    {
+    case MODE_MENU:
+      Screen_Menu_Draw();
+      break;
+    case MODE_METEO:
+      Screen_Meteo_Draw();
+      break;
+    case MODE_CLOCK:
+      Screen_Clock_Draw();
+      break;
+    }
+  }
 }
