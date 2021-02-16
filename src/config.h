@@ -17,7 +17,7 @@
 
 //DHT Define section
 #define DHT_PIN 2
-#define DHT_TYPE DHT11
+#define DHT_TYPE DHT22 
 
 //LCD Define siction
 #define LCD_PORT 0x27
