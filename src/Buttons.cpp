@@ -69,9 +69,9 @@ bool Get_Button3_LongPress()
 void Buttons_Setup()
 {
   //  Setup buttons
-  pinMode(BUTTON1_PIN, INPUT_PULLUP);
-  pinMode(BUTTON2_PIN, INPUT_PULLUP);
-  pinMode(BUTTON3_PIN, INPUT_PULLUP);    
+  pinMode(BUTTON1_PIN, INPUT);
+  pinMode(BUTTON2_PIN, INPUT);
+  pinMode(BUTTON3_PIN, INPUT);    
   Log("BUTTONS setup complete");
 }
 

@@ -39,6 +39,7 @@ bool Clock_Setup()
 
 String Clock_Get_Date()
 {
+
     if (Setup_Result)
     {
         dt = clock->getDateTime();
@@ -56,6 +57,20 @@ String Clock_Get_Time()
     {
         dt = clock->getDateTime();
         return String(dt.hour) + ":" + String(dt.minute) + ":" + String(dt.second);
+    }
+    else
+    {
+        return "0x0BADFOOD";
+    }
+}
+
+String Clock_Get_Alarm1()
+{
+
+    if (Setup_Result)
+    {
+        RTCAlarmTime AlarmTime = clock->getAlarm1();
+        return String(AlarmTime.day) + " " + String(AlarmTime.hour) + ":" + String(AlarmTime.minute) + ":" + String(AlarmTime.second);
     }
     else
     {

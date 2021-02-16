@@ -7,6 +7,9 @@
 #include "BUZZERActuator.h"
 
 #include "Buttons.h"
+
+#include "Menu.h"
+
 #include "ScreenMeteo.h"
 
 void Screen_Meteo_Init()
@@ -19,15 +22,38 @@ void Screen_Meteo_Read_Buttons()
 {
     if (Get_Button1_LongPress() == true)
     {
-        Log("Go to MENU");
-        Set_Current_Screen(MODE_MENU);
+        if (!Get_Edit_Mode())
+        {
+            Set_Edit_Mode(true);
+            Log("To edit");
+        }
+        else
+        {
+            //TODO ask user to save changes
+            Set_Edit_Mode(false);
+            Log("From edit");
+        }
+        Screen_Meteo_Draw();
+    }
+    if (Get_Edit_Mode())
+    {
+        if (Get_Button2_ShortPress() == true)
+        {            
+            LCD_Print_Line3("Edit read key 2");
+            Screen_Meteo_Draw();
+        }
+
+        if (Get_Button3_ShortPress() == true)
+        {
+            LCD_Print_Line3("Edit read key 3");
+            Screen_Meteo_Draw();
+        }
     }
 }
 
 void Screen_Meteo_Draw()
 {
-    LCD_Clear();
-
+    
     float current_heat_index = DHT_Get_Heat_Index();
 
     if (current_heat_index > HEAT_INDEX_LEVEL_LOW)

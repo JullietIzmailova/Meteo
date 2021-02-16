@@ -64,9 +64,10 @@ Hello Screen.
 
 #include "Buttons.h"
 
-#include "ScreenMenu.h"
+#include "Menu.h"
 #include "ScreenMeteo.h"
 #include "ScreenClock.h"
+#include "ScreenAlarm.h"
 
 int Loop_Count = MAIN_LOOP_COUNT_LIMIT;
 
@@ -136,38 +137,43 @@ void loop()
   // Wait a few seconds between measurements.
   delay(MAIN_LOOP_DELAY);
 
-  if (Saved_Mode != Get_Current_Screen())
+  Buttons_Loop();
+
+  Menu_Read_Buttons();
+
+  int current_screen_index = Get_Current_Screen_Index();
+
+  if (Saved_Mode != current_screen_index)
   {
-    switch (Get_Current_Screen())
+    switch (current_screen_index)
     {
-    case MODE_MENU:
-      Screen_Menu_Init();
-      break;
     case MODE_METEO:
       Screen_Meteo_Init();
       break;
     case MODE_CLOCK:
       Screen_Clock_Init();
       break;
+    case MODE_ALARM:
+      Screen_Alarm_Init();
+      break;
 
     }
   }
 
-  Saved_Mode = Get_Current_Screen();
+  Saved_Mode = current_screen_index;
 
-  Buttons_Loop();
-
-  switch (Get_Current_Screen())
+  switch (current_screen_index)
   {
-  case MODE_MENU:
-    Screen_Menu_Read_Buttons();
-    break;
   case MODE_METEO:
     Screen_Meteo_Read_Buttons();
     break;
   case MODE_CLOCK:
     Screen_Clock_Read_Buttons();
     break;
+   case MODE_ALARM:
+        Screen_Alarm_Read_Buttons();
+      break;
+
   }
 
   //Slow loop
@@ -176,17 +182,18 @@ void loop()
   {
     Loop_Count = 0;
 
-    switch (Get_Current_Screen())
+    switch (current_screen_index)
     {
-    case MODE_MENU:
-      Screen_Menu_Draw();
-      break;
     case MODE_METEO:
       Screen_Meteo_Draw();
       break;
     case MODE_CLOCK:
       Screen_Clock_Draw();
       break;
+    case MODE_ALARM:
+      Screen_Alarm_Draw();
+      break;
+
     }
   }
 }

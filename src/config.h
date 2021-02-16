@@ -6,28 +6,24 @@
 
 #define MODE_NULL -1
 #define MODE_METEO 0
-#define MODE_MENU 1
-#define MODE_CLOCK 2
-
-void Set_Current_Screen(int new_mode);
-int Get_Current_Screen();
+#define MODE_CLOCK 1
+#define MODE_ALARM 2
 
 #define SERIAL_BAUD 9600
 #define SETUP_DELAY 100
 
 #define DEBUG_SETUP
-#define DEBUG_SETUP_DELAY 300
-
+#define DEBUG_SETUP_DELAY 10
 
 #define MAIN_LOOP_DELAY 20
-#define MAIN_LOOP_COUNT_LIMIT 1000
+#define MAIN_LOOP_COUNT_LIMIT 50
 
 #define HEAT_INDEX_LEVEL_LOW 27
 #define HEAT_INDEX_LEVEL_HIGH 30
 
 //DHT Define section
 #define DHT_PIN 2
-#define DHT_TYPE DHT11 
+#define DHT_TYPE DHT11
 
 //LCD Define siction
 #define LCD_PORT 0x27
@@ -39,7 +35,7 @@ int Get_Current_Screen();
 #define LED_GREEN_PIN 5
 #define LED_YELLOW_PIN 6
 
-//LIGHT SENSOR Define section 
+//LIGHT SENSOR Define section
 #define LIGHT_SENSOR_ANALOG_PIN A2
 
 #ifndef LIGHT_SENSOR_ANALOG_PIN
@@ -57,7 +53,4 @@ int Get_Current_Screen();
 #define BUTTON2_PIN 10
 #define BUTTON3_PIN 11
 
-
 #endif
-
-
