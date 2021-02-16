@@ -15,17 +15,19 @@ int Get_Current_Screen();
 #define SERIAL_BAUD 9600
 #define SETUP_DELAY 100
 
+#define DEBUG_SETUP
+#define DEBUG_SETUP_DELAY 300
+
+
 #define MAIN_LOOP_DELAY 20
 #define MAIN_LOOP_COUNT_LIMIT 1000
 
 #define HEAT_INDEX_LEVEL_LOW 27
 #define HEAT_INDEX_LEVEL_HIGH 30
 
-
-
 //DHT Define section
 #define DHT_PIN 2
-#define DHT_TYPE DHT22 
+#define DHT_TYPE DHT11
 
 //LCD Define siction
 #define LCD_PORT 0x27

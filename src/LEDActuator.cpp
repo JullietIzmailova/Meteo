@@ -8,7 +8,16 @@ bool LED_Setup()
     LED_RED_Setup();
     LED_GREEN_Setup();
     LED_YELLOW_Setup();
-    Log("Led setup complete");
+#ifdef DEBUG_SETUP
+    LED_Only_Red_Set_Light();
+    delay(DEBUG_SETUP_DELAY);
+    LED_Only_Yellow_Set_Light();
+    delay(DEBUG_SETUP_DELAY);
+    LED_Only_Green_Set_Light();
+    delay(DEBUG_SETUP_DELAY);
+    LED_Green_Set_Light(false);    
+#endif
+    Log("LED setup complete");
     return true;
 }
 

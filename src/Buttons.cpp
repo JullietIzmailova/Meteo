@@ -1,4 +1,5 @@
 #include "config.h"
+#include "log.h"
 #include "Buttons.h"
 #include <Arduino.h>
 
@@ -71,6 +72,7 @@ void Buttons_Setup()
   pinMode(BUTTON1_PIN, INPUT_PULLUP);
   pinMode(BUTTON2_PIN, INPUT_PULLUP);
   pinMode(BUTTON3_PIN, INPUT_PULLUP);    
+  Log("BUTTONS setup complete");
 }
 
 void ReadButtonStates()

@@ -1,4 +1,5 @@
 #include "config.h"
+#include "log.h"
 #include "LCDActuator.h"
 #include "src/libraries/LiquidCrystal_I2C/LiquidCrystal_I2C.h"
 
@@ -24,6 +25,7 @@ bool LCD_Setup()
 {
     lcd = new LiquidCrystal_I2C(LCD_PORT, LCD_COLS, LCD_ROWS); //port = 0x27 for PCF8574T and PCF8574AT for 0x3F, 16 cols, 2 raws
     lcd->init();
+    Log("LCD setup complete");
     return true;
 }
 
@@ -44,26 +46,88 @@ void LCD_Set_Light(bool light)
     }
 }
 
+void LCD_Print_Right(String text)
+{
+    if (text.length() == 0)
+    {
+        return;
+    }
+    if (text.length() < 20)
+    {
+        String empty = "";
+        for (unsigned int i=0; i < 20 - text.length(); i++)
+        {
+            empty += " ";
+        }
+        text = text + empty;
+    }
+    lcd->print(text);
+}
+
+void LCD_Print_Center(String text)
+{
+    if (text.length() == 0)
+    {
+        return;
+    }
+
+    if (text.length() < 20)
+    {
+        String empty = "";
+        for (unsigned int i=0; i < (20 - text.length()) / 2; i++)
+        {
+            empty += " ";
+        }
+        text = empty + text + empty;
+    }    
+    lcd->print(text);        
+}
+
+
 void LCD_Print_Line1(String text)
 {
     lcd->setCursor(0, 0);
-    lcd->print(text);
+    LCD_Print_Right(text);
 }
 
 void LCD_Print_Line2(String text)
 {
     lcd->setCursor(0, 1);
-    lcd->print(text);
+    LCD_Print_Right(text);
 }
 
 void LCD_Print_Line3(String text)
 {
     lcd->setCursor(0, 2);
-    lcd->print(text);
+    LCD_Print_Right(text);
 }
 
 void LCD_Print_Line4(String text)
 {
     lcd->setCursor(0, 3);
-    lcd->print(text);
+    LCD_Print_Right(text);
+}
+
+void LCD_Print_CenterLine1(String text)
+{
+    lcd->setCursor(0, 0);
+    LCD_Print_Center(text);
+}
+
+void LCD_Print_CenterLine2(String text)
+{
+    lcd->setCursor(0, 1);
+    LCD_Print_Center(text);
+}
+
+void LCD_Print_CenterLine3(String text)
+{
+    lcd->setCursor(0, 2);
+    LCD_Print_Center(text);
+}
+
+void LCD_Print_CenterLine4(String text)
+{
+    lcd->setCursor(0, 3);
+    LCD_Print_Center(text);
 }

@@ -76,19 +76,56 @@ void setup()
   Serial.begin(SERIAL_BAUD);
   delay(SETUP_DELAY);
   Log("Do setup...");
-  Buttons_Setup();
-  // Setup beeper
-  BUZZER_Setup();
-  // Setup light bulbs
-  LIGHT_Setup();
-  LED_Setup();
-  DHT_Setup();
-  Clock_Setup();
-  // Setup screen
+
   LCD_Setup();
   LCD_Set_Light(true);
-  LCD_Print_Line1("Hello");
-  LCD_Print_Line3("wait...");
+
+  LCD_Print_CenterLine1("Hello Meteo");
+  LCD_Print_CenterLine3("Please wait...");
+
+#ifdef DEBUG_SETUP
+  delay(DEBUG_SETUP_DELAY);
+
+  Buttons_Setup();
+  LCD_Print_CenterLine2("Buttons setup...OK");
+  delay(DEBUG_SETUP_DELAY);
+
+  BUZZER_Setup();
+  LCD_Print_CenterLine2("Buzzer setup...OK");
+  delay(DEBUG_SETUP_DELAY);
+
+  LIGHT_Setup();
+  LCD_Print_CenterLine2("Light setup...OK");
+  delay(DEBUG_SETUP_DELAY);
+
+  LED_Setup();
+  LCD_Print_CenterLine2("Led setup...OK");
+  delay(DEBUG_SETUP_DELAY);
+
+  DHT_Setup();
+  LCD_Print_CenterLine2("DHT setup...OK");
+  delay(DEBUG_SETUP_DELAY);
+
+  Clock_Setup();
+  LCD_Print_CenterLine2("Clock setup...OK");
+  delay(DEBUG_SETUP_DELAY);
+  LCD_Print_CenterLine2("");
+  LCD_Print_CenterLine3("Setup complete");
+  delay(DEBUG_SETUP_DELAY);
+#else
+  Buttons_Setup();
+
+  BUZZER_Setup();
+
+  LIGHT_Setup();
+
+  LED_Setup();
+
+  DHT_Setup();
+
+  Clock_Setup();
+#endif  
+    
   Log("Setup complete");
 }
 

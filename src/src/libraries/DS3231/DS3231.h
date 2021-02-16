@@ -152,7 +152,7 @@ class DS3231
 	uint8_t conv2d(const char* p);
 
 	void writeRegister8(uint8_t reg, uint8_t value);
-	uint8_t readRegister8(uint8_t reg);
+	int readRegister8(uint8_t reg);
 };
 
 #endif
