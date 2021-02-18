@@ -1,5 +1,7 @@
 #include <Arduino.h>
 
+void LCD_Print_Chars();
+
 bool LCD_Setup();
 
 void LCD_Clear();

@@ -128,6 +128,8 @@ void setup()
 #endif  
     
   Log("Setup complete");
+  LCD_Print_Chars();
+  
 }
 
 int Saved_Mode = MODE_NULL;
@@ -136,6 +138,7 @@ void loop()
 {
   // Wait a few seconds between measurements.
   delay(MAIN_LOOP_DELAY);
+  return;
 
   Buttons_Loop();
 
