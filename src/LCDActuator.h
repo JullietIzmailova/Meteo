@@ -1,8 +1,13 @@
-#include <Arduino.h>
+#ifndef LCD_ACTUATOR
+#define LCD_ACTUATOR
 
-void LCD_Print_Chars();
+#include <Arduino.h>
+#include "src/libraries/LiquidCrystal_I2C/LiquidCrystal_I2C.h"
+
 
 bool LCD_Setup();
+
+LiquidCrystal_I2C * LCD_Get_LCDPointer();
 
 void LCD_Clear();
 
@@ -17,3 +22,4 @@ void LCD_Print_CenterLine1(String text);
 void LCD_Print_CenterLine2(String text);
 void LCD_Print_CenterLine3(String text);
 void LCD_Print_CenterLine4(String text);
+#endif

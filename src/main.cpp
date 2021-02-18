@@ -56,7 +56,8 @@ Hello Screen.
 #include "config.h"
 #include "log.h"
 #include "DHTSensor.h"
-#include "LCDActuator.h"
+//#include "LCDActuator.h"
+#include "LCDBigNumbers.h"
 #include "LEDActuator.h"
 #include "LIGHTActuator.h"
 #include "BUZZERActuator.h"
@@ -80,6 +81,13 @@ void setup()
 
   LCD_Setup();
   LCD_Set_Light(true);
+
+  LCDBigNumber_Setup();
+  LCDBigNumber_Print_Height2_Right(2, "1234");
+  
+  
+
+  return;
 
   LCD_Print_CenterLine1("Hello Meteo");
   LCD_Print_CenterLine3("Please wait...");
@@ -113,6 +121,7 @@ void setup()
   LCD_Print_CenterLine2("");
   LCD_Print_CenterLine3("Setup complete");
   delay(DEBUG_SETUP_DELAY);
+  Log("Setup complete");
 #else
   Buttons_Setup();
 
@@ -127,8 +136,6 @@ void setup()
   Clock_Setup();
 #endif  
     
-  Log("Setup complete");
-  LCD_Print_Chars();
   
 }
 
