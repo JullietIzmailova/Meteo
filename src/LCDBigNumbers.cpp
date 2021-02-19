@@ -202,11 +202,37 @@ void Print_Number_3_h2(int column, int row)
     lcd->write(byte(3));
 }
 
+void Print_Number_6_h2(int column, int row)
+{
+    LiquidCrystal_I2C * lcd = LCD_Get_LCDPointer();
+//first line 
+    lcd->setCursor(column, row);
+    lcd->write(byte(3));
+
+    lcd->setCursor(column+1, row);
+    lcd->write(byte(5));
+
+    lcd->setCursor(column+2, row);
+    lcd->write(byte(0));
+//secont line     
+    lcd->setCursor(column, row + 1);
+    lcd->write(byte(3));
+
+    lcd->setCursor(column+1, row + 1);
+    lcd->write(byte(1));
+
+    lcd->setCursor(column+2, row + 1);
+    lcd->write(byte(3));
+}
+
 
 void LCDBigNumber_Print_Height2_Right(int row, String number)
 {
     Print_Number_3_h2(0, row);
     Print_Number_2_h2(3, row);
+    Print_Number_6_h2(6, row);
+    Print_Number_0_h2(9, row);
+    Print_Number_1_h2(12, row);
     //Print_Number_3_h2(8, row);
     //Print_Number_2_h2(12, row);
     //Print_Number_1_h2(16, row);
