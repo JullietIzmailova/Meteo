@@ -25,6 +25,29 @@ byte Block5x2[] = {
   B11111
 };
 
+byte Block5x2Up[] = {
+  B11111,
+  B11111,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000
+};
+
+byte Block5x2Down[] = {
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B11111,
+  B11111
+};
+
+
 byte Block5x3Down[] = {
   B00000,
   B00000,
@@ -47,6 +70,18 @@ byte Block4x8[] = {
   B11110,
   B11110,
   B11110
+};
+
+byte Block4x8Right[] = {
+  B01111,
+  B01111,
+  B01111,
+  B01111,
+  B01111,
+  B01111,
+  B01111,
+  B01111,
+  B01111
 };
 
 byte Block4x3Down[] = {
@@ -75,9 +110,50 @@ bool LCDBigNumber_Setup()
     lcd->createChar(2, Block5x3Down);
     lcd->createChar(3, Block4x8);
     lcd->createChar(4, Block4x3Down);
-    
+    lcd->createChar(5, Block5x2Up);
+    lcd->createChar(6, Block5x2Down);
+    lcd->createChar(7, Block4x8Right);
+
     return true;
 
+}
+
+
+void Print_Number_0_h2(int column, int row)
+{
+    LiquidCrystal_I2C * lcd = LCD_Get_LCDPointer();
+//first line 
+    lcd->setCursor(column, row);
+    lcd->write(byte(7));
+
+    lcd->setCursor(column+1, row);
+    lcd->write(byte(5));
+
+    lcd->setCursor(column+2, row);
+    lcd->write(byte(3));
+//secont line     
+    lcd->setCursor(column, row + 1);
+    lcd->write(byte(7));
+
+    lcd->setCursor(column+1, row + 1);
+    lcd->write(byte(6));
+
+    lcd->setCursor(column+2, row + 1);
+    lcd->write(byte(3));
+}
+
+void Print_Number_1_h2(int column, int row)
+{
+    LiquidCrystal_I2C * lcd = LCD_Get_LCDPointer();
+//first line 
+    lcd->setCursor(column+1, row);
+    lcd->write(byte(5));
+
+    lcd->setCursor(column+2, row);
+    lcd->write(byte(3));
+//secont line     
+    lcd->setCursor(column+2, row + 1);
+    lcd->write(byte(3));
 }
 
 void Print_Number_2_h2(int column, int row)
@@ -131,7 +207,15 @@ void LCDBigNumber_Print_Height2_Right(int row, String number)
 {
     Print_Number_3_h2(0, row);
     Print_Number_2_h2(3, row);
-    
+    //Print_Number_3_h2(8, row);
+    //Print_Number_2_h2(12, row);
+    //Print_Number_1_h2(16, row);
+    //Print_Number_0_h2(0, row);
+    //Print_Number_1_h2(3, row);
+    //Print_Number_2_h2(6, row);
+    //Print_Number_3_h2(9, row);
+
+
 
 }
 
