@@ -96,6 +96,18 @@ byte Block4x3Down[] = {
   B11110
 };
 
+byte Block3x3Midle[] = {
+  B00000,
+  B00000,
+  B01110,
+  B01110,
+  B01110,
+  B00000,        
+  B00000,
+  B00000,
+  B00000
+};
+
 bool LCDBigNumber_Setup()
 {
     
@@ -113,6 +125,7 @@ bool LCDBigNumber_Setup()
     lcd->createChar(5, Block5x2Up);
     lcd->createChar(6, Block5x2Down);
     lcd->createChar(7, Block4x8Right);
+   /* lcd->createChar(8, BBlock3x3Midle);*/
 
     return true;
 
@@ -224,7 +237,18 @@ void Print_Number_6_h2(int column, int row)
     lcd->setCursor(column+2, row + 1);
     lcd->write(byte(3));
 }
+/*void Print_Symbol_Colon_h2(int column, int row)
+{
+    LiquidCrystal_I2C * lcd = LCD_Get_LCDPointer();
+//first line 
+    lcd->setCursor(column, row);
+    lcd->write(byte(8));
 
+//secont line     
+    lcd->setCursor(column, row + 1);
+    lcd->write(byte(8));
+
+}*/
 
 void LCDBigNumber_Print_Height2_Right(int row, String number)
 {
@@ -240,6 +264,7 @@ void LCDBigNumber_Print_Height2_Right(int row, String number)
     //Print_Number_1_h2(3, row);
     //Print_Number_2_h2(6, row);
     //Print_Number_3_h2(9, row);
+    //Print_Symbol_Colon_h2(6, row);
 
 
 
