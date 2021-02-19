@@ -26,7 +26,7 @@
 #define DHT_TYPE DHT11
 
 //LCD Define siction
-#define LCD_PORT 0x3F
+#define LCD_PORT 0x27
 #define LCD_COLS 20
 #define LCD_ROWS 4
 
