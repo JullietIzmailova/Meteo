@@ -83,12 +83,7 @@ void setup()
   LCD_Set_Light(true);
 
   LCDBigNumber_Setup();
-  LCDBigNumber_Print_Height2_Right(2, "1234");
   
-  
-
-  return;
-
   LCD_Print_CenterLine1("Hello Meteo");
   LCD_Print_CenterLine3("Please wait...");
 
@@ -145,8 +140,7 @@ void loop()
 {
   // Wait a few seconds between measurements.
   delay(MAIN_LOOP_DELAY);
-  return;
-
+  
   Buttons_Loop();
 
   Menu_Read_Buttons();

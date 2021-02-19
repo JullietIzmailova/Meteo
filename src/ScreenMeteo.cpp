@@ -1,7 +1,7 @@
 #include "config.h"
 #include "log.h"
 #include "DHTSensor.h"
-#include "LCDActuator.h"
+#include "LCDBigNumbers.h"
 #include "LEDActuator.h"
 #include "LIGHTActuator.h"
 #include "BUZZERActuator.h"
@@ -81,8 +81,9 @@ void Screen_Meteo_Draw()
     //работаем с Bool снятого с цифрового пина
     LCD_Print_Line4("A => " + String(lightValue) + " Ph => " + String(LIGHT_GET_data()));
 #endif
-
-    LCD_Print_Line1("Temp ====> " + String(DHT_Get_Temperature()) + char(223) + "C");
-    LCD_Print_Line2("Hum =====> " + String(DHT_Get_Humidity()) + " %");
-    LCD_Print_Line3("curr Hi => " + String(current_heat_index));
+   LCDBigNumber_Print_Height2_Right(0, String(DHT_Get_Temperature()));
+   LCDBigNumber_Print_Height2_Right(2, String(DHT_Get_Humidity()));   
+   // LCD_Print_Line1("Temp ====> " + String(DHT_Get_Temperature()) + char(223) + "C");
+   // LCD_Print_Line2("Hum =====> " + String(DHT_Get_Humidity()) + " %");
+   // LCD_Print_Line3("curr Hi => " + String(current_heat_index));
 }
