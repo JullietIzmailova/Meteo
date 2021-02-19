@@ -73,9 +73,9 @@ void Screen_Meteo_Draw()
     }
 
 #ifdef LIGHT_SENSOR_ANALOG_PIN
-    float lightValue = LIGHT_GET_data();
+    //float lightValue = LIGHT_GET_data();
     //работаем с Вольтами снятыми с аналогового пина
-    LCD_Print_Line4("V => " + String(lightValue) + " Ph => " + String(LIGHT_GET_data()));
+    //LCD_Print_Line4("V => " + String(lightValue) + " Ph => " + String(LIGHT_GET_data()));
 #else
     float lightValue = LIGHT_GET_data();
     //работаем с Bool снятого с цифрового пина

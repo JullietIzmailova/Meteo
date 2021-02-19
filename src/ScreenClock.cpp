@@ -1,6 +1,6 @@
 #include "config.h"
 #include "log.h"
-#include "LCDActuator.h"
+#include "LCDBigNumbers.h"
 #include "LEDActuator.h"
 #include "LIGHTActuator.h"
 #include "BUZZERActuator.h"
@@ -55,8 +55,8 @@ void Screen_Clock_Draw()
 {
     if (!Get_Edit_Mode())
     {
-        LCD_Print_CenterLine1(Clock_Get_Date());
-        LCD_Print_CenterLine2(Clock_Get_Time());
+        LCDBigNumber_Print_Height2_Right(0, String(Clock_Get_Date()));
+        LCDBigNumber_Print_Height2_Right(2, String(Clock_Get_Time()));
         LCD_Print_CenterLine3(" ");
     }
     else
