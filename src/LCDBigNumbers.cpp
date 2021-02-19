@@ -285,6 +285,29 @@ void Print_Number_8_h2(int column, int row)
     lcd->write(byte(3));
 }
 
+void Print_Number_9_h2(int column, int row)
+{
+    LiquidCrystal_I2C *lcd = LCD_Get_LCDPointer();
+    //first line
+    lcd->setCursor(column, row);
+    lcd->write(byte(3));
+
+    lcd->setCursor(column + 1, row);
+    lcd->write(byte(1));
+
+    lcd->setCursor(column + 2, row);
+    lcd->write(byte(7));
+    //secont line
+    lcd->setCursor(column, row + 1);
+    lcd->write(byte(6));
+
+    lcd->setCursor(column + 1, row + 1);
+    lcd->write(byte(6));
+
+    lcd->setCursor(column + 2, row + 1);
+    lcd->write(byte(7));
+}
+
 void Print_Symbol_Colon_h2(int column, int row)
 {
     LiquidCrystal_I2C *lcd = LCD_Get_LCDPointer();
