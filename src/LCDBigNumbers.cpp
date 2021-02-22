@@ -444,6 +444,13 @@ void LCDBigNumber_Print_Height2_Right(int row, String number)
           start++;
         }
 
+/*
+        if (number[i] == '%')
+        {
+          Print_Symbol_Colon_h2(start, row);        
+          start++;
+        }
+*/
     }
 }
 

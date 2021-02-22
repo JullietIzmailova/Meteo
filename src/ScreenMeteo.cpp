@@ -81,8 +81,18 @@ void Screen_Meteo_Draw()
     //работаем с Bool снятого с цифрового пина
     LCD_Print_Line4("A => " + String(lightValue) + " Ph => " + String(LIGHT_GET_data()));
 #endif
-   LCDBigNumber_Print_Height2_Right(0, String(DHT_Get_Temperature()));
-   LCDBigNumber_Print_Height2_Right(2, String(DHT_Get_Humidity()));   
+// String str_temp,str_hum;
+
+    int ttt;
+    ttt=String(DHT_Get_Temperature()).toInt();
+   Log(String(ttt));
+
+    String t1,t2;
+    t1=String((String(DHT_Get_Temperature()).toInt()));
+
+   LCDBigNumber_Print_Height2_Right(0, t1);
+   //LCDBigNumber_Print_Height2_Right(2, String(DHT_Get_Humidity()).toInt());  
+    
    // LCD_Print_Line1("Temp ====> " + String(DHT_Get_Temperature()) + char(223) + "C");
    // LCD_Print_Line2("Hum =====> " + String(DHT_Get_Humidity()) + " %");
    // LCD_Print_Line3("curr Hi => " + String(current_heat_index));
