@@ -38,7 +38,7 @@ void Screen_Meteo_Read_Buttons()
     if (Get_Edit_Mode())
     {
         if (Get_Button2_ShortPress() == true)
-        {            
+        {
             LCD_Print_Line3("Edit read key 2");
             Screen_Meteo_Draw();
         }
@@ -53,7 +53,7 @@ void Screen_Meteo_Read_Buttons()
 
 void Screen_Meteo_Draw()
 {
-    
+
     float current_heat_index = DHT_Get_Heat_Index();
 
     if (current_heat_index > HEAT_INDEX_LEVEL_LOW)
@@ -81,19 +81,16 @@ void Screen_Meteo_Draw()
     //работаем с Bool снятого с цифрового пина
     LCD_Print_Line4("A => " + String(lightValue) + " Ph => " + String(LIGHT_GET_data()));
 #endif
-// String str_temp,str_hum;
+    String str_temp = String((String(DHT_Get_Temperature()).toInt()))+" C";
+    String str_hum = String((String(DHT_Get_Humidity()).toInt()))+" %";
 
-    int ttt;
-    ttt=String(DHT_Get_Temperature()).toInt();
-   Log(String(ttt));
+    Log(str_temp);
+    Log(str_hum);
 
-    String t1,t2;
-    t1=String((String(DHT_Get_Temperature()).toInt()));
+    LCDBigNumber_Print_Height2_Right(0, str_temp);
+    LCDBigNumber_Print_Height2_Right(2, str_hum);
 
-   LCDBigNumber_Print_Height2_Right(0, t1);
-   //LCDBigNumber_Print_Height2_Right(2, String(DHT_Get_Humidity()).toInt());  
-    
-   // LCD_Print_Line1("Temp ====> " + String(DHT_Get_Temperature()) + char(223) + "C");
-   // LCD_Print_Line2("Hum =====> " + String(DHT_Get_Humidity()) + " %");
-   // LCD_Print_Line3("curr Hi => " + String(current_heat_index));
+    // LCD_Print_Line1("Temp ====> " + String(DHT_Get_Temperature()) + char(223) + "C");
+    // LCD_Print_Line2("Hum =====> " + String(DHT_Get_Humidity()) + " %");
+    // LCD_Print_Line3("curr Hi => " + String(current_heat_index));
 }
