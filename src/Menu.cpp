@@ -7,7 +7,7 @@
 bool Edit_Mode = false;
 #define MENU_ITEMS_SIZE 2
 
-int Current_Screen_Index = 0;
+int Current_Screen_Index = MODE_CLOCK;
 
 int Get_Current_Screen_Index()
 {

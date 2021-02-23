@@ -43,7 +43,20 @@ String Clock_Get_Date()
     if (Setup_Result)
     {
         dt = clock->getDateTime();
-        return String(dt.day) + "." + String(dt.month) + "." + String(dt.year);
+        String days = String(dt.day);
+        if (days.length() < 2)
+        {
+            days = "0" + days;
+        }
+
+        String month = String(dt.month);
+        if (month.length() < 2)
+        {
+            month = "0" + month;
+        }
+
+
+        return days + "." + month + "." + String(dt.year);
     }
     else
     {
@@ -56,7 +69,24 @@ String Clock_Get_Time()
     if (Setup_Result)
     {
         dt = clock->getDateTime();
-        return String(dt.hour) + ":" + String(dt.minute) + ":" + String(dt.second);
+        String hours = String(dt.hour);
+        if (hours.length() < 2)
+        {
+            hours = "0" + hours;
+        }
+        String minutes = String(dt.minute);
+        if (minutes.length() < 2)
+        {
+            minutes = "0" + minutes;
+        }
+
+        String seconds = String(dt.second);
+        if (seconds.length() < 2)
+        {
+            seconds = "0" + seconds;
+        }
+
+        return hours + ":" + minutes + ":" + seconds;
     }
     else
     {

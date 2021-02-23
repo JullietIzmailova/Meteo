@@ -55,9 +55,10 @@ void Screen_Clock_Draw()
 {
     if (!Get_Edit_Mode())
     {
-        LCDBigNumber_Print_Height2_Right(0, String(Clock_Get_Date()));
-        LCDBigNumber_Print_Height2_Right(2, String(Clock_Get_Time()));
-        LCD_Print_CenterLine3(" ");
+        LCDBigNumber_Print_Height2_Right(0, String(Clock_Get_Time()));
+        LCD_Print_CenterLine3("__________");                               
+        LCD_Print_CenterLine4(String(Clock_Get_Date()));
+                
     }
     else
     {
