@@ -146,16 +146,27 @@ void loop()
      String s = Serial.readString();
      s.toUpperCase();
 
-     if (s.equals("AT+B"))
+     if (s.equals("AT+B\n")) 
      {
        BUZZER_Set_sound(true);
        delay(2000);
        BUZZER_Set_sound(false);
      }
-     if (s.equals("AT+T?"))     
+     else  
+     if (s.equals("AT+T?\n"))     
      {
        Serial.println(DHT_Get_Temperature());
      }
+     else
+     if (s.equals("AT+H?\n"))     
+     {
+       Serial.println(DHT_Get_Humidity());
+     }
+     else 
+      {
+        Serial.println ("Unknown Command");
+      }
+    
   }
   
   Buttons_Loop();
