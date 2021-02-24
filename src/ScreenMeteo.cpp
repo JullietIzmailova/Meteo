@@ -84,8 +84,8 @@ void Screen_Meteo_Draw()
     String str_temp = String((String(DHT_Get_Temperature()).toInt()))+" C";
     String str_hum = String((String(DHT_Get_Humidity()).toInt()))+" %";
 
-    Log(str_temp);
-    Log(str_hum);
+//    Log(str_temp);
+//    Log(str_hum);
 
     LCDBigNumber_Print_Height2_Right(0, str_temp);
     LCDBigNumber_Print_Height2_Right(2, str_hum);

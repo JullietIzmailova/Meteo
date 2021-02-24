@@ -140,6 +140,23 @@ void loop()
 {
   // Wait a few seconds between measurements.
   delay(MAIN_LOOP_DELAY);
+
+  if (Serial.available())
+  {
+     String s = Serial.readString();
+     s.toUpperCase();
+
+     if (s.equals("AT+B"))
+     {
+       BUZZER_Set_sound(true);
+       delay(2000);
+       BUZZER_Set_sound(false);
+     }
+     if (s.equals("AT+T?"))     
+     {
+       Serial.println(DHT_Get_Temperature());
+     }
+  }
   
   Buttons_Loop();
 
