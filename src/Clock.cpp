@@ -1,10 +1,13 @@
 #include "config.h"
 #include "log.h"
 #include "Clock.h"
+#include "BUZZERActuator.h"
 #include "src/libraries/DS3231/DS3231.h"
 
 DS3231 *clock = nullptr;
 RTCDateTime dt;
+
+bool buzzerOn = false;
 
 bool Setup_Result = false;
 
@@ -15,7 +18,15 @@ bool Clock_Setup()
     if (clock->begin())
     {
         // Set sketch compiling time
-        clock->setDateTime(__DATE__, __TIME__);
+        //clock->setDateTime(__DATE__, __TIME__);
+        clock->armAlarm1(false);
+
+        clock->clearAlarm1();
+
+        clock->setAlarm1(0, 22, 26, 00, DS3231_MATCH_H_M_S);
+
+        clock->armAlarm1(true);
+
         //TODO: FFR: clock->begin check I2C
         dt = clock->getDateTime();
         if (dt.year != 0)
@@ -37,6 +48,11 @@ bool Clock_Setup()
     }
 }
 
+void Clock_Set_DateTime(String DATE, String TIME)
+{
+    clock->setDateTime(DATE.c_str(), TIME.c_str());
+}
+
 String Clock_Get_Date()
 {
 
@@ -54,7 +70,6 @@ String Clock_Get_Date()
         {
             month = "0" + month;
         }
-
 
         return days + "." + month + "." + String(dt.year);
     }
@@ -84,6 +99,25 @@ String Clock_Get_Time()
         if (seconds.length() < 2)
         {
             seconds = "0" + seconds;
+        }
+        //check alarm
+
+        RTCAlarmTime alarmTime;
+        if (clock->isArmed1())
+        {
+            alarmTime = clock->getAlarm1();
+            Log(String(alarmTime.hour));
+            Log(String(alarmTime.minute));
+            if ((dt.hour == alarmTime.hour) && (dt.minute == alarmTime.minute))
+            {
+                Log("alarm");
+                BUZZER_Set_sound(buzzerOn);
+                buzzerOn = !buzzerOn;
+            }
+            else
+            {
+                BUZZER_Set_sound(false);
+            }
         }
 
         return hours + ":" + minutes + ":" + seconds;

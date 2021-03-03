@@ -12,7 +12,7 @@ namespace Meteo
 
             Console.WriteLine("Meteo UART");
 
-            SerialPort _serialPort = new SerialPort("COM10", 
+            SerialPort _serialPort = new SerialPort("COM4", 
                                         9600, 
                                         Parity.None,
                                         8,

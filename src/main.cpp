@@ -56,13 +56,13 @@ Hello Screen.
 #include "config.h"
 #include "log.h"
 #include "DHTSensor.h"
-//#include "LCDActuator.h"
 #include "LCDBigNumbers.h"
 #include "LEDActuator.h"
 #include "LIGHTActuator.h"
 #include "BUZZERActuator.h"
 #include "Clock.h"
 
+#include "UART.h"
 #include "Buttons.h"
 
 #include "Menu.h"
@@ -141,33 +141,8 @@ void loop()
   // Wait a few seconds between measurements.
   delay(MAIN_LOOP_DELAY);
 
-  if (Serial.available())
-  {
-     String s = Serial.readString();
-     s.toUpperCase();
+  UARTLoop();
 
-     if (s.equals("AT+B\n")) 
-     {
-       BUZZER_Set_sound(true);
-       delay(2000);
-       BUZZER_Set_sound(false);
-     }
-     else  
-     if (s.equals("AT+T?\n"))     
-     {
-       Serial.println(DHT_Get_Temperature());
-     }
-     else
-     if (s.equals("AT+H?\n"))     
-     {
-       Serial.println(DHT_Get_Humidity());
-     }
-     else 
-      {
-        Serial.println ("Unknown Command");
-      }
-    
-  }
   
   Buttons_Loop();
 
