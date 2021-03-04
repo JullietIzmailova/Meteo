@@ -6,11 +6,14 @@
 #include "LIGHTActuator.h"
 #include "BUZZERActuator.h"
 
+#include "Clock.h"
 #include "Buttons.h"
 
 #include "Menu.h"
 
 #include "ScreenMeteo.h"
+
+int leftPosition = 0;
 
 void Screen_Meteo_Init()
 {
@@ -81,14 +84,25 @@ void Screen_Meteo_Draw()
     //работаем с Bool снятого с цифрового пина
     LCD_Print_Line4("A => " + String(lightValue) + " Ph => " + String(LIGHT_GET_data()));
 #endif
-    String str_temp = String((String(DHT_Get_Temperature()).toInt()))+" C";
-    String str_hum = String((String(DHT_Get_Humidity()).toInt()))+" %";
+
+    leftPosition++;
+
+    String str_temp = String((int)DHT_Get_Temperature())+ char(223) + "C";
+    String str_hum = String((int)DHT_Get_Humidity())+"%";
+
+    String outString = Clock_Get_Date() + " " + str_temp + " " + str_hum;
+    //20
+
+    LCDBigNumber_Print_Height2_Right(0, String(Clock_Get_Time()));
+    LCD_Print_CenterLine3(Clock_Get_Date() + " " + str_temp + " " + str_hum);                               
+    LCD_Print_CenterLine4("heat " + String((int)DHT_Get_Heat_Index()) +" light " + String(LIGHT_GET_data()));
+
 
 //    Log(str_temp);
 //    Log(str_hum);
 
-    LCDBigNumber_Print_Height2_Right(0, str_temp);
-    LCDBigNumber_Print_Height2_Right(2, str_hum);
+    //LCDBigNumber_Print_Height2_Right(0, str_temp);
+    //LCDBigNumber_Print_Height2_Right(2, str_hum);
 
     // LCD_Print_Line1("Temp ====> " + String(DHT_Get_Temperature()) + char(223) + "C");
     // LCD_Print_Line2("Hum =====> " + String(DHT_Get_Humidity()) + " %");

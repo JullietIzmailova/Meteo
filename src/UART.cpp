@@ -33,6 +33,11 @@ void UARTLoop()
        Serial.println(DHT_Get_Humidity());
      }
      else 
+     if (s.equals("AT+L?\n"))     
+     {
+       Serial.println("OK AT+L? " + String(LIGHT_GET_data()));
+     }
+     else 
      if (s.indexOf("AT+SDT") == 0)     
      {
        //AT+SDT Mar 03 2021;21:55:40    

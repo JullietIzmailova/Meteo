@@ -106,8 +106,6 @@ String Clock_Get_Time()
         if (clock->isArmed1())
         {
             alarmTime = clock->getAlarm1();
-            Log(String(alarmTime.hour));
-            Log(String(alarmTime.minute));
             if ((dt.hour == alarmTime.hour) && (dt.minute == alarmTime.minute))
             {
                 Log("alarm");
