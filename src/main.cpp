@@ -12,7 +12,7 @@ Meteo->
 	->Digital
 Clock->
 	->Set date - скрин редактирования времени, по окончанию назад в меню, а потом назад в скрин. 
-	->Set time - появляется экран редактирования времени - выход длительное нажатие меню. 
+	->Set time - появляется экран редактирования времени - выход длительное нажатие меню Button1. 
                и возврат назад в меню на этот же пункт откуда я вызвал. 
                Нажание Manu/Back возврат к скрину откуда вызвано меню. 
 	->Set 24/12 [24] ? где запомнить 
@@ -68,9 +68,13 @@ Hello Screen.
 #include "Menu.h"
 #include "ScreenMeteo.h"
 #include "ScreenClock.h"
+#include "ScreenSetClock.h"
 #include "ScreenAlarm.h"
 
 int Loop_Count = MAIN_LOOP_COUNT_LIMIT;
+
+int App_Mode = MODE_METEO;
+int App_Saved_Mode = MODE_METEO;
 
 //Setup section -------------------------------
 void setup()
@@ -148,11 +152,10 @@ void loop()
 
   Menu_Read_Buttons();
 
-  int current_screen_index = Get_Current_Screen_Index();
 
-  if (Saved_Mode != current_screen_index)
+  if (App_Saved_Mode != App_Mode)  // is previous state of application the same?
   {
-    switch (current_screen_index)
+    switch (App_Mode)
     {
     case MODE_METEO:
       Screen_Meteo_Init();
@@ -163,13 +166,15 @@ void loop()
     case MODE_ALARM:
       Screen_Alarm_Init();
       break;
-
+    case MODE_SET_CLOCK:
+      Screen_SetClock_Init();
+      break;
     }
   }
 
-  Saved_Mode = current_screen_index;
+  Saved_Mode = App_Mode;
 
-  switch (current_screen_index)
+  switch (App_Mode)
   {
   case MODE_METEO:
     Screen_Meteo_Read_Buttons();
@@ -180,7 +185,9 @@ void loop()
    case MODE_ALARM:
         Screen_Alarm_Read_Buttons();
       break;
-
+    case MODE_SET_CLOCK:
+      Screen_SetClock_Read_Buttons();
+      break;      
   }
 
   //Slow loop
@@ -189,7 +196,7 @@ void loop()
   {
     Loop_Count = 0;
 
-    switch (current_screen_index)
+    switch (App_Mode)
     {
     case MODE_METEO:
       Screen_Meteo_Draw();
@@ -203,4 +210,16 @@ void loop()
 
     }
   }
+}
+
+int Is_Edit_Mode()
+{
+  if ((App_Mode==MODE_SET_CLOCK)&&(App_Mode==MODE_SET_ALARM))
+  {
+    return true;
+  }else
+  {
+    return false;
+  }
+
 }

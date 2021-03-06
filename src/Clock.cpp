@@ -80,6 +80,7 @@ String Clock_Get_Date()
 }
 
 String Clock_Get_Time()
+// retrurn time in format hh:mm:ss
 {
     if (Setup_Result)
     {
