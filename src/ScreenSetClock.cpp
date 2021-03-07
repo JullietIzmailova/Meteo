@@ -1,5 +1,13 @@
 #include "Buttons.h"
-
+#include "main.h"
+#include "config.h"
+#include "log.h"
+#include "LCDBigNumbers.h"
+#include "LEDActuator.h"
+#include "LIGHTActuator.h"
+#include "BUZZERActuator.h"
+#include "Clock.h"
+#include "ScreenSetClock.h"
 
 void Screen_SetClock_Init()
 {
@@ -11,7 +19,7 @@ void Screen_SetClock_Read_Buttons()
 {
     if (Get_Button1_LongPress() == true)
     {
-        Set_Clock_Mode(true);
+        App_Mode=App_Saved_Mode;
         Log("To edit");
     }
 }

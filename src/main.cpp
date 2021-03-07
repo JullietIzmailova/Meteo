@@ -53,6 +53,7 @@ Hello Screen.
 ------------------------------- */
 
 //Исходные коды метеостанции
+#include "main.h"
 #include "config.h"
 #include "log.h"
 #include "DHTSensor.h"
@@ -73,8 +74,7 @@ Hello Screen.
 
 int Loop_Count = MAIN_LOOP_COUNT_LIMIT;
 
-int App_Mode = MODE_METEO;
-int App_Saved_Mode = MODE_METEO;
+
 
 //Setup section -------------------------------
 void setup()

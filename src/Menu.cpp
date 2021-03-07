@@ -1,3 +1,4 @@
+#include "main.h"
 #include "config.h"
 #include "log.h"
 #include "LCDActuator.h"

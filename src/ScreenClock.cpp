@@ -1,3 +1,4 @@
+#include "main.h"
 #include "config.h"
 #include "log.h"
 #include "LCDBigNumbers.h"
@@ -22,8 +23,8 @@ void Screen_Clock_Read_Buttons()
 {
     if (Get_Button1_LongPress() == true)
     {
-        Set_Edit_Mode(true);
-        Log("To edit");
+        App_Mode=MODE_SET_CLOCK;
+        Log("mode=edit");
     }
 }
 
