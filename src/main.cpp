@@ -74,7 +74,8 @@ Hello Screen.
 
 int Loop_Count = MAIN_LOOP_COUNT_LIMIT;
 
-
+int App_Mode = MODE_METEO;
+int App_Saved_Mode = MODE_METEO;
 
 //Setup section -------------------------------
 void setup()
@@ -87,7 +88,7 @@ void setup()
   LCD_Set_Light(true);
 
   LCDBigNumber_Setup();
-  
+
   LCD_Print_CenterLine1("Hello Meteo");
   LCD_Print_CenterLine3("Please wait...");
 
@@ -133,9 +134,7 @@ void setup()
   DHT_Setup();
 
   Clock_Setup();
-#endif  
-    
-  
+#endif
 }
 
 int Saved_Mode = MODE_NULL;
@@ -147,13 +146,11 @@ void loop()
 
   UARTLoop();
 
-  
   Buttons_Loop();
 
   Menu_Read_Buttons();
 
-
-  if (App_Saved_Mode != App_Mode)  // is previous state of application the same?
+  if (App_Saved_Mode != App_Mode) // is previous state of application the same?
   {
     switch (App_Mode)
     {
@@ -172,7 +169,7 @@ void loop()
     }
   }
 
-  Saved_Mode = App_Mode;
+  App_Saved_Mode = App_Mode;
 
   switch (App_Mode)
   {
@@ -182,12 +179,12 @@ void loop()
   case MODE_CLOCK:
     Screen_Clock_Read_Buttons();
     break;
-   case MODE_ALARM:
-        Screen_Alarm_Read_Buttons();
-      break;
-    case MODE_SET_CLOCK:
-      Screen_SetClock_Read_Buttons();
-      break;      
+  case MODE_ALARM:
+    Screen_Alarm_Read_Buttons();
+    break;
+  case MODE_SET_CLOCK:
+    Screen_SetClock_Read_Buttons();
+    break;
   }
 
   //Slow loop
@@ -207,19 +204,18 @@ void loop()
     case MODE_ALARM:
       Screen_Alarm_Draw();
       break;
-
     }
   }
 }
 
 int Is_Edit_Mode()
 {
-  if ((App_Mode==MODE_SET_CLOCK)&&(App_Mode==MODE_SET_ALARM))
+  if ((App_Mode == MODE_SET_CLOCK) && (App_Mode == MODE_SET_ALARM))
   {
     return true;
-  }else
+  }
+  else
   {
     return false;
   }
-
 }

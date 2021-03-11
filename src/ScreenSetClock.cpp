@@ -9,6 +9,10 @@
 #include "Clock.h"
 #include "ScreenSetClock.h"
 
+extern int App_Mode;
+extern int App_Saved_Mode;
+
+
 void Screen_SetClock_Init()
 {
     LCD_Clear();

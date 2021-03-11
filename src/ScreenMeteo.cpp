@@ -1,3 +1,4 @@
+#include "main.h"
 #include "config.h"
 #include "log.h"
 #include "DHTSensor.h"
@@ -15,6 +16,10 @@
 
 int leftPosition = 0;
 
+extern int App_Mode;
+extern int App_Saved_Mode;
+
+
 void Screen_Meteo_Init()
 {
     LCD_Clear();
@@ -25,20 +30,21 @@ void Screen_Meteo_Read_Buttons()
 {
     if (Get_Button1_LongPress() == true)
     {
-        if (!Get_Edit_Mode())
+        if (!Is_Edit_Mode())
         {
-            Set_Edit_Mode(true);
+            App_Mode = MODE_METEO;
+            
             Log("To edit");
         }
         else
         {
             //TODO ask user to save changes
-            Set_Edit_Mode(false);
+            App_Mode = MODE_METEO;
             Log("From edit");
         }
         Screen_Meteo_Draw();
     }
-    if (Get_Edit_Mode())
+    if (Is_Edit_Mode())
     {
         if (Get_Button2_ShortPress() == true)
         {

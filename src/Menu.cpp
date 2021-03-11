@@ -1,11 +1,15 @@
-#include "main.h"
+
 #include "config.h"
 #include "log.h"
 #include "LCDActuator.h"
 #include "Buttons.h"
 #include "Menu.h"
+#include "main.h"
 
 #define MENU_ITEMS_SIZE 2
+
+extern int App_Mode;
+extern int App_Saved_Mode;
 
 
 void Menu_Read_Buttons()
