@@ -96,9 +96,8 @@ void Screen_Meteo_Draw()
 
     String str_temp = String((int)DHT_Get_Temperature())+ char(223) + "C";
     String str_hum = String((int)DHT_Get_Humidity())+"%";
-
     String outString = Clock_Get_Date() + " " + str_temp + " " + str_hum;
-    
+
     LCDBigNumber_Print_Height2_Right(0, String(Clock_Get_Time()));
     LCD_Print_CenterLine3(Clock_Get_Date() + " " + str_temp + " " + str_hum);                               
     LCD_Print_CenterLine4("heat " + String((int)DHT_Get_Heat_Index()) +" light " + String(LIGHT_GET_data()));
