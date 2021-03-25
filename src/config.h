@@ -10,6 +10,7 @@
 #define MODE_ALARM 2
 #define MODE_SET_CLOCK 3
 #define MODE_SET_ALARM 4
+#define MODE_SET_METEO 5
 
 #define SERIAL_BAUD 9600
 #define SETUP_DELAY 100

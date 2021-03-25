@@ -210,7 +210,7 @@ void loop()
 
 int Is_Edit_Mode()
 {
-  if ((App_Mode == MODE_SET_CLOCK) && (App_Mode == MODE_SET_ALARM))
+  if ((App_Mode == MODE_SET_CLOCK) || (App_Mode == MODE_SET_ALARM) || (App_Mode == MODE_SET_METEO))
   {
     return true;
   }

@@ -19,6 +19,7 @@ int leftPosition = 0;
 extern int App_Mode;
 extern int App_Saved_Mode;
 
+bool hoursEdit = true;
 
 void Screen_Meteo_Init()
 {
@@ -32,8 +33,8 @@ void Screen_Meteo_Read_Buttons()
     {
         if (!Is_Edit_Mode())
         {
-            App_Mode = MODE_METEO;
-            
+            App_Mode = MODE_SET_METEO;
+            hoursEdit = true;
             Log("To edit");
         }
         else
@@ -97,20 +98,10 @@ void Screen_Meteo_Draw()
     String str_hum = String((int)DHT_Get_Humidity())+"%";
 
     String outString = Clock_Get_Date() + " " + str_temp + " " + str_hum;
-    //20
-
+    
     LCDBigNumber_Print_Height2_Right(0, String(Clock_Get_Time()));
     LCD_Print_CenterLine3(Clock_Get_Date() + " " + str_temp + " " + str_hum);                               
     LCD_Print_CenterLine4("heat " + String((int)DHT_Get_Heat_Index()) +" light " + String(LIGHT_GET_data()));
 
 
-//    Log(str_temp);
-//    Log(str_hum);
-
-    //LCDBigNumber_Print_Height2_Right(0, str_temp);
-    //LCDBigNumber_Print_Height2_Right(2, str_hum);
-
-    // LCD_Print_Line1("Temp ====> " + String(DHT_Get_Temperature()) + char(223) + "C");
-    // LCD_Print_Line2("Hum =====> " + String(DHT_Get_Humidity()) + " %");
-    // LCD_Print_Line3("curr Hi => " + String(current_heat_index));
 }
