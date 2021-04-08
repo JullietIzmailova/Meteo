@@ -1,8 +1,8 @@
 # OWLOS Meteo
 
-# DIY Open Source Weather Station 
+![DIY Open Source Weather Station](https://github.com/KirinDenis/Meteo/raw/V3/resources/gallery/MeteoLogo.jpg)
 
-## Based on Arduino UNO.
+## DIY Open Source Weather Station Based on Arduino UNO.
 
 ### For all who learning firmware programming.
 
@@ -21,4 +21,4 @@ Estimated hardware budget 20$
 
 ![3D STL models of boxes are also available for 3D printing](https://github.com/KirinDenis/Meteo/raw/V3/3DprintingSTL/back.stl)
                                                         
-We use PlatforIO development environment
+### We use PlatforIO development environment
