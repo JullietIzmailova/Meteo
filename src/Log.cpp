@@ -3,5 +3,5 @@
 
 void Log(String text)
 {
-    Serial.println(text);
+    Serial.println("LOG: " + text);
 }
