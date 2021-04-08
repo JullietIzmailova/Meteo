@@ -24,5 +24,5 @@ void LCD_Print_CenterLine3(String text);
 void LCD_Print_CenterLine4(String text);
 
 void LCD_Print_Text(int column, int row, String text);
-void LCD_Print_Number(int column, int row, unsigned n, uint8_t base);
+void LCD_Print_Number(int column, int row, unsigned n, int base);
 #endif

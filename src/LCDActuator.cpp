@@ -152,7 +152,7 @@ void LCD_Print_Text(int column, int row, String text)
     lcd->print(text);
 }
 
-void LCD_Print_Number(int column, int row, unsigned n, uint8_t base)
+void LCD_Print_Number(int column, int row, unsigned n, int base)
 {
     lcd->setCursor(column, row);
 

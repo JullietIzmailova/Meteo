@@ -20,6 +20,7 @@ bool Clock_Setup()
         // Set sketch compiling time
         //clock->setDateTime(__DATE__, __TIME__);
         
+        
         clock->armAlarm1(false);
 
         clock->clearAlarm1();
@@ -58,6 +59,12 @@ void Clock_Set_DateTime(String DATE, String TIME)
 {
     clock->setDateTime(DATE.c_str(), TIME.c_str());
 }
+
+void Clock_Set_DateTime(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second )
+{
+    clock->setDateTime(year, month, day, hour, minute, second);
+}
+
 
 String Clock_Get_Date()
 {

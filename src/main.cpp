@@ -147,6 +147,37 @@ void loop()
 
   Buttons_Loop();
 
+
+  App_Saved_Mode = App_Mode;
+  if ((App_Mode != MODE_SET_METEO) && (App_Mode != MODE_SET_CLOCK) && (App_Mode != MODE_SET_ALARM))
+  {
+     if (Get_Button2_ShortPress() == true)
+     {
+       if (App_Mode > MODE_METEO)
+       {
+         App_Mode--;
+       }
+       else 
+       {
+         App_Mode = MODE_ALARM;
+       }
+     }
+
+     if (Get_Button3_ShortPress() == true)
+     {
+       if (App_Mode < MODE_ALARM)
+       {
+         App_Mode++;
+       }
+       else 
+       {
+         App_Mode = MODE_METEO;
+       }
+     }
+
+  }
+
+
   if (App_Saved_Mode != App_Mode) // is previous state of application the same?
   {
     switch (App_Mode)
@@ -165,8 +196,6 @@ void loop()
       break;
     }
   }
-
-  App_Saved_Mode = App_Mode;
 
   switch (App_Mode)
   {
