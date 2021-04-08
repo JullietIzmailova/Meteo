@@ -155,7 +155,7 @@ void Screen_Alarm_Draw()
     if (App_Mode != MODE_SET_ALARM)
     {
         LCD_Print_CenterLine1("Alarm at:");
-        LCDBigNumber_Print_Height2_Right(1, Clock_Get_Alarm1());
+        LCDBigNumber_Print_Height2_Left(1, Clock_Get_Alarm1());
         if (Clock_Get_Alarm1_Status())
         {
             LCD_Print_CenterLine4("[on]");

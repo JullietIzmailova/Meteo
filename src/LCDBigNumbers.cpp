@@ -361,9 +361,9 @@ void Print_Symbol_Colon_h2(int column, int row)
     lcd->write(byte(5));
 }
 
-void LCDBigNumber_Print_Height2_Right(int row, String number)
+void LCDBigNumber_Print_Height2_Offset(int row, int offset, String number)
 {
-    int start = 0;
+    int start = offset;
     for (int i=0; i < number.length(); i++)
     {
         if (number[i] == '0')
@@ -454,12 +454,21 @@ void LCDBigNumber_Print_Height2_Right(int row, String number)
     }
 }
 
-void LCDBigNumber_Print_Height2_Center(int line, String number)
+void LCDBigNumber_Print_Height2_Right(int row, String number)
 {
+  int size = 20 - number.length() * 3;
+  LCDBigNumber_Print_Height2_Offset(row, size, number);
 }
 
-void LCDBigNumber_Print_Height2_Left(int line, String number)
+void LCDBigNumber_Print_Height2_Center(int row, String number)
 {
+  int size = 10 - (number.length() * 3 / 2);
+  LCDBigNumber_Print_Height2_Offset(row, size, number);
+}
+
+void LCDBigNumber_Print_Height2_Left(int row, String number)
+{  
+  LCDBigNumber_Print_Height2_Offset(row, 0, number);
 }
 
 void LCDBigNumber_Print_Height4_Right(String number)

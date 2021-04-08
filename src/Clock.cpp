@@ -125,14 +125,14 @@ String Clock_Get_Time()
                     BUZZER_Set_sound(buzzerOn);
                     buzzerOn = !buzzerOn;
                 }
-                else 
+                else
                 {
-                   BUZZER_Set_sound(false);                    
+                    BUZZER_Set_sound(false);
                 }
             }
             else
             {
-                BUZZER_Set_sound(false);                
+                BUZZER_Set_sound(false);
                 AnyKey = false;
             }
         }
@@ -149,7 +149,7 @@ RTCAlarmTime Clock_Get_Alarm1_RTC()
 {
     if (Setup_Result)
     {
-        return clock->getAlarm1();        
+        return clock->getAlarm1();
     }
     RTCAlarmTime AlarmTime;
     return AlarmTime;
@@ -159,7 +159,7 @@ String Clock_Get_Alarm1()
 {
     if (Setup_Result)
     {
-        RTCAlarmTime AlarmTime = Clock_Get_Alarm1_RTC();        
+        RTCAlarmTime AlarmTime = Clock_Get_Alarm1_RTC();
 
         String hours = String(AlarmTime.hour);
         if (hours.length() < 2)
@@ -205,5 +205,5 @@ void Clock_Set_Alarm1_Status(bool Enable)
 
 void Clock_Set_Alarm1(uint8_t dydw, uint8_t hour, uint8_t minute, uint8_t second, bool armed)
 {
-   clock->setAlarm1(dydw, hour, minute, second, DS3231_MATCH_H_M_S, armed);    
+    clock->setAlarm1(dydw, hour, minute, second, DS3231_MATCH_H_M_S, armed);
 }

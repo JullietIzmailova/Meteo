@@ -26,36 +26,34 @@ void Screen_Meteo_Init()
 
 void Screen_Meteo_Read_Buttons()
 {
+    //FFR: Meteo modes
+    /*
     if (Get_Button1_LongPress() == true)
     {
         if (App_Mode != MODE_SET_METEO)
         {
             App_Mode = MODE_SET_METEO;
-            hoursEdit = true;
-            Log("To edit");
+            hoursEdit = true;    
         }
         else
         {
             //TODO ask user to save changes
-            App_Mode = MODE_METEO;
-            Log("From edit");
+            App_Mode = MODE_METEO;            
         }
         Screen_Meteo_Draw();
     }
+
     if (App_Mode == MODE_SET_METEO)
     {
         if (Get_Button2_ShortPress() == true)
-        {
-            LCD_Print_Line3("Edit read key 2");
-            Screen_Meteo_Draw();
+        {    
         }
 
         if (Get_Button3_ShortPress() == true)
         {
-            LCD_Print_Line3("Edit read key 3");
-            Screen_Meteo_Draw();
         }
     }
+    */
 }
 
 void Screen_Meteo_Draw()
@@ -86,18 +84,35 @@ void Screen_Meteo_Draw()
 #else
     float lightValue = LIGHT_GET_data();
     //работаем с Bool снятого с цифрового пина
-    LCD_Print_Line4("A => " + String(lightValue) + " Ph => " + String(LIGHT_GET_data()));
+    //LCD_Print_Line4("A => " + String(lightValue) + " Ph => " + String(LIGHT_GET_data()));
 #endif
 
-    leftPosition++;
+    //Temperature
+    LCDBigNumber_Print_Height2_Left(0, String((int)DHT_Get_Temperature()));
+    LCD_Print_Text(6, 0, String(char(223)));
+    LCD_Print_Text(6, 1, "C");
 
-    String str_temp = String((int)DHT_Get_Temperature())+ char(223) + "C";
-    String str_hum = String((int)DHT_Get_Humidity())+"%";
-    String outString = Clock_Get_Date() + " " + str_temp + " " + str_hum;
+    //Heat index
+    String heatStr = " H:" + String((int)DHT_Get_Heat_Index());
+    for (int i = 0; i < 7 - heatStr.length(); i++)
+    {
+        heatStr += " ";
+    }
+    LCD_Print_Text(7, 0, heatStr);
+    //Light
+    String lightStr = " L:" + String((int)LIGHT_GET_data());
+    for (int i = 0; i < 7 - lightStr.length(); i++)
+    {
+        lightStr += " ";
+    }
+    LCD_Print_Text(7, 1, lightStr);
 
-    LCDBigNumber_Print_Height2_Right(0, String(Clock_Get_Time()));
-    LCD_Print_CenterLine3(Clock_Get_Date() + " " + str_temp + " " + str_hum);                               
-    LCD_Print_CenterLine4("heat " + String((int)DHT_Get_Heat_Index()) +" light " + String(LIGHT_GET_data()));
+    //Humidity
+    LCDBigNumber_Print_Height2_Offset(0, 20 - 7, String((int)DHT_Get_Humidity()));
+    LCD_Print_Text(19, 1, "%");
 
+    //Date Time
+    LCD_Print_CenterLine3(" ");
+    LCD_Print_CenterLine4(Clock_Get_Date() + " " + Clock_Get_Time());
 
 }

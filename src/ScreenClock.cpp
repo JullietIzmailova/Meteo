@@ -210,9 +210,17 @@ void Screen_Clock_Draw()
 {
     if (App_Mode != MODE_SET_CLOCK)
     {
-        LCDBigNumber_Print_Height2_Right(0, String(Clock_Get_Time()));
+        LCDBigNumber_Print_Height2_Left(0, String(Clock_Get_Time()));
         LCD_Print_CenterLine3(" ");
         LCD_Print_CenterLine4(String(Clock_Get_Date()));
+        if (Clock_Get_Alarm1_Status())
+        {
+            LCD_Print_Text(20-3, 3, "<A>");
+        }
+        else 
+        {
+            LCD_Print_Text(20-3, 3, "  ");
+        }
     }
     else
     {
