@@ -72,8 +72,12 @@ Hello Screen.
 
 int Loop_Count = MAIN_LOOP_COUNT_LIMIT;
 
+
 int App_Mode = MODE_CLOCK;
 int App_Saved_Mode = MODE_METEO;
+int currentEdit = 0;
+bool blink = false;
+bool AnyKey = false;
 
 //Setup section -------------------------------
 void setup()
@@ -147,6 +151,10 @@ void loop()
 
   Buttons_Loop();
 
+  if (Get_Button1_ShortPress() || Get_Button2_ShortPress() || Get_Button3_ShortPress())
+  {
+    AnyKey = true;
+  }
 
   App_Saved_Mode = App_Mode;
   if ((App_Mode != MODE_SET_METEO) && (App_Mode != MODE_SET_CLOCK) && (App_Mode != MODE_SET_ALARM))

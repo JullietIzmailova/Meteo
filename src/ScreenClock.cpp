@@ -23,9 +23,9 @@ RTCDateTime saveDT;
 #define EDIT_MONTH 4
 #define EDIT_YEAR 5
 
-int currentEdit = EDIT_HOURE;
+extern int currentEdit;
 
-bool blink = false;
+extern bool blink;
 
 void Screen_Clock_Init()
 {
@@ -40,6 +40,7 @@ void Screen_Clock_Read_Buttons()
         if (App_Mode != MODE_SET_CLOCK)
         {
             App_Mode = MODE_SET_CLOCK;
+            currentEdit = EDIT_HOURE;            
             editDT = Get_DateTime();
             saveDT = editDT;
             LCD_Clear();

@@ -3,10 +3,10 @@
 #include "Clock.h"
 #include "BUZZERActuator.h"
 
-
 DS3231 *clock = nullptr;
 RTCDateTime dt;
 
+extern bool AnyKey;
 bool buzzerOn = false;
 
 bool Setup_Result = false;
@@ -19,15 +19,14 @@ bool Clock_Setup()
     {
         // Set sketch compiling time
         //clock->setDateTime(__DATE__, __TIME__);
-        
-        
-        clock->armAlarm1(false);
 
-        clock->clearAlarm1();
+        //  clock->armAlarm1(false);
 
-        clock->setAlarm1(0, 22, 26, 00, DS3231_MATCH_H_M_S);
+        //        clock->clearAlarm1();
 
-        clock->armAlarm1(true);
+        //        clock->setAlarm1(0, 22, 26, 00, DS3231_MATCH_H_M_S);
+
+        //        clock->armAlarm1(true);
 
         //TODO: FFR: clock->begin check I2C
         dt = clock->getDateTime();
@@ -60,11 +59,10 @@ void Clock_Set_DateTime(String DATE, String TIME)
     clock->setDateTime(DATE.c_str(), TIME.c_str());
 }
 
-void Clock_Set_DateTime(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second )
+void Clock_Set_DateTime(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second)
 {
     clock->setDateTime(year, month, day, hour, minute, second);
 }
-
 
 String Clock_Get_Date()
 {
@@ -122,13 +120,20 @@ String Clock_Get_Time()
             alarmTime = clock->getAlarm1();
             if ((dt.hour == alarmTime.hour) && (dt.minute == alarmTime.minute))
             {
-                Log("alarm");
-                BUZZER_Set_sound(buzzerOn);
-                buzzerOn = !buzzerOn;
+                if (!AnyKey)
+                {
+                    BUZZER_Set_sound(buzzerOn);
+                    buzzerOn = !buzzerOn;
+                }
+                else 
+                {
+                   BUZZER_Set_sound(false);                    
+                }
             }
             else
             {
-                BUZZER_Set_sound(false);
+                BUZZER_Set_sound(false);                
+                AnyKey = false;
             }
         }
 
@@ -140,16 +145,65 @@ String Clock_Get_Time()
     }
 }
 
-String Clock_Get_Alarm1()
+RTCAlarmTime Clock_Get_Alarm1_RTC()
 {
-
     if (Setup_Result)
     {
-        RTCAlarmTime AlarmTime = clock->getAlarm1();
-        return String(AlarmTime.day) + " " + String(AlarmTime.hour) + ":" + String(AlarmTime.minute) + ":" + String(AlarmTime.second);
+        return clock->getAlarm1();        
+    }
+    RTCAlarmTime AlarmTime;
+    return AlarmTime;
+}
+
+String Clock_Get_Alarm1()
+{
+    if (Setup_Result)
+    {
+        RTCAlarmTime AlarmTime = Clock_Get_Alarm1_RTC();        
+
+        String hours = String(AlarmTime.hour);
+        if (hours.length() < 2)
+        {
+            hours = "0" + hours;
+        }
+        String minutes = String(AlarmTime.minute);
+        if (minutes.length() < 2)
+        {
+            minutes = "0" + minutes;
+        }
+
+        String seconds = String(AlarmTime.second);
+        if (seconds.length() < 2)
+        {
+            seconds = "0" + seconds;
+        }
+
+        return hours + ":" + minutes + ":" + seconds;
     }
     else
     {
         return "0x0BADFOOD";
     }
+}
+
+bool Clock_Get_Alarm1_Status()
+{
+    if (Setup_Result)
+    {
+        return clock->isArmed1();
+    }
+    return false;
+}
+
+void Clock_Set_Alarm1_Status(bool Enable)
+{
+    if (Setup_Result)
+    {
+        clock->armAlarm1(Enable);
+    }
+}
+
+void Clock_Set_Alarm1(uint8_t dydw, uint8_t hour, uint8_t minute, uint8_t second, bool armed)
+{
+   clock->setAlarm1(dydw, hour, minute, second, DS3231_MATCH_H_M_S, armed);    
 }
