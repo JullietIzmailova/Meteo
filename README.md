@@ -1,12 +1,12 @@
 # OWLOS Meteo
 
-#DIY Open Source Weather Station 
+# DIY Open Source Weather Station 
 
-##Based on Arduino UNO.
+## Based on Arduino UNO.
 
-###For all who learning firmware programming.
+### For all who learning firmware programming.
 
-###Parts used:
+### Parts used:
 - Arduino UNO R3 (CH340)
 - Arduino Sensor Shield V4.0
 - DHT11
