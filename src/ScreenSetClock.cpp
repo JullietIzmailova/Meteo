@@ -1,5 +1,4 @@
 #include "Buttons.h"
-#include "main.h"
 #include "config.h"
 #include "log.h"
 #include "LCDBigNumbers.h"

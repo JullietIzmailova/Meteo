@@ -1,4 +1,3 @@
-#include "main.h"
 #include "config.h"
 #include "log.h"
 #include "DHTSensor.h"
@@ -9,8 +8,6 @@
 
 #include "Clock.h"
 #include "Buttons.h"
-
-#include "Menu.h"
 
 #include "ScreenMeteo.h"
 
@@ -31,7 +28,7 @@ void Screen_Meteo_Read_Buttons()
 {
     if (Get_Button1_LongPress() == true)
     {
-        if (!Is_Edit_Mode())
+        if (App_Mode != MODE_SET_METEO)
         {
             App_Mode = MODE_SET_METEO;
             hoursEdit = true;
@@ -45,7 +42,7 @@ void Screen_Meteo_Read_Buttons()
         }
         Screen_Meteo_Draw();
     }
-    if (Is_Edit_Mode())
+    if (App_Mode == MODE_SET_METEO)
     {
         if (Get_Button2_ShortPress() == true)
         {

@@ -1,4 +1,4 @@
-#include "main.h"
+
 #include "config.h"
 #include "log.h"
 #include "LCDActuator.h"
@@ -9,7 +9,7 @@
 
 #include "Buttons.h"
 
-#include "Menu.h"
+
 
 #include "ScreenAlarm.h"
 
@@ -26,7 +26,7 @@ void Screen_Alarm_Read_Buttons()
 {
     if (Get_Button1_LongPress() == true)
     {
-        if (!Is_Edit_Mode())
+        if (App_Mode != MODE_SET_ALARM)
         {
             App_Mode = MODE_SET_ALARM;            
             Log("To edit");
@@ -39,7 +39,7 @@ void Screen_Alarm_Read_Buttons()
         }
         Screen_Alarm_Draw();
     }
-    if (Is_Edit_Mode())
+    if (App_Mode == MODE_SET_ALARM)
     {
         if (Get_Button2_ShortPress() == true)
         {            
@@ -57,7 +57,7 @@ void Screen_Alarm_Read_Buttons()
 
 void Screen_Alarm_Draw()
 {
-    if (!Is_Edit_Mode())
+    if (App_Mode != MODE_SET_ALARM)
     {
         LCD_Print_CenterLine1(Clock_Get_Alarm1());
         LCD_Print_CenterLine2(" ");        

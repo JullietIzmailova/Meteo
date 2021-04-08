@@ -2,7 +2,7 @@
 #include "log.h"
 #include "Clock.h"
 #include "BUZZERActuator.h"
-#include "src/libraries/DS3231/DS3231.h"
+
 
 DS3231 *clock = nullptr;
 RTCDateTime dt;
@@ -19,6 +19,7 @@ bool Clock_Setup()
     {
         // Set sketch compiling time
         //clock->setDateTime(__DATE__, __TIME__);
+        
         clock->armAlarm1(false);
 
         clock->clearAlarm1();
@@ -46,6 +47,11 @@ bool Clock_Setup()
         Log("CLOCK I2C setup fail");
         return false;
     }
+}
+
+RTCDateTime Get_DateTime()
+{
+    return clock->getDateTime();
 }
 
 void Clock_Set_DateTime(String DATE, String TIME)

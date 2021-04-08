@@ -53,7 +53,6 @@ Hello Screen.
 ------------------------------- */
 
 //Исходные коды метеостанции
-#include "main.h"
 #include "config.h"
 #include "log.h"
 #include "DHTSensor.h"
@@ -66,7 +65,6 @@ Hello Screen.
 #include "UART.h"
 #include "Buttons.h"
 
-#include "Menu.h"
 #include "ScreenMeteo.h"
 #include "ScreenClock.h"
 #include "ScreenSetClock.h"
@@ -74,7 +72,7 @@ Hello Screen.
 
 int Loop_Count = MAIN_LOOP_COUNT_LIMIT;
 
-int App_Mode = MODE_METEO;
+int App_Mode = MODE_CLOCK;
 int App_Saved_Mode = MODE_METEO;
 
 //Setup section -------------------------------
@@ -139,6 +137,7 @@ void setup()
 
 int Saved_Mode = MODE_NULL;
 
+
 void loop()
 {
   // Wait a few seconds between measurements.
@@ -147,8 +146,6 @@ void loop()
   UARTLoop();
 
   Buttons_Loop();
-
-  Menu_Read_Buttons();
 
   if (App_Saved_Mode != App_Mode) // is previous state of application the same?
   {
@@ -174,16 +171,16 @@ void loop()
   switch (App_Mode)
   {
   case MODE_METEO:
+  case MODE_SET_METEO:
     Screen_Meteo_Read_Buttons();
     break;
   case MODE_CLOCK:
+  case MODE_SET_CLOCK:  
     Screen_Clock_Read_Buttons();
     break;
   case MODE_ALARM:
+  case MODE_SET_ALARM:  
     Screen_Alarm_Read_Buttons();
-    break;
-  case MODE_SET_CLOCK:
-    Screen_SetClock_Read_Buttons();
     break;
   }
 
@@ -196,26 +193,18 @@ void loop()
     switch (App_Mode)
     {
     case MODE_METEO:
+    case MODE_SET_METEO:
       Screen_Meteo_Draw();
       break;
     case MODE_CLOCK:
+    case MODE_SET_CLOCK:  
       Screen_Clock_Draw();
       break;
     case MODE_ALARM:
+    case MODE_SET_ALARM:  
       Screen_Alarm_Draw();
       break;
     }
   }
 }
 
-int Is_Edit_Mode()
-{
-  if ((App_Mode == MODE_SET_CLOCK) || (App_Mode == MODE_SET_ALARM) || (App_Mode == MODE_SET_METEO))
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-}
