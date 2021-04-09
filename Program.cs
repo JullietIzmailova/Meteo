@@ -1,178 +1,223 @@
-﻿using System;
+﻿/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS Meteo
+Copyright 2020, 2021 by:
+- Julliet Izmailova
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+- Serhii Lehkii (sergey@light.kiev.ua)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/Meteo
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
+using System;
 using System.IO.Ports;
 using System.Threading;
-using System.Management;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
 
 namespace Meteo
 {
-
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-    public struct PHYSICAL_MONITOR
+    public class Program
     {
-        public IntPtr hPhysicalMonitor;
-
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
-        public string szPhysicalMonitorDescription;
-    }
-
-    public class BrightnessController : IDisposable
-    {
-        [DllImport("user32.dll", EntryPoint = "MonitorFromWindow")]
-        public static extern IntPtr MonitorFromWindow([In] IntPtr hwnd, uint dwFlags);
-
-        [DllImport("dxva2.dll", EntryPoint = "DestroyPhysicalMonitors")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool DestroyPhysicalMonitors(uint dwPhysicalMonitorArraySize, ref PHYSICAL_MONITOR[] pPhysicalMonitorArray);
-
-        [DllImport("dxva2.dll", EntryPoint = "GetNumberOfPhysicalMonitorsFromHMONITOR")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GetNumberOfPhysicalMonitorsFromHMONITOR(IntPtr hMonitor, ref uint pdwNumberOfPhysicalMonitors);
-
-        [DllImport("dxva2.dll", EntryPoint = "GetPhysicalMonitorsFromHMONITOR")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GetPhysicalMonitorsFromHMONITOR(IntPtr hMonitor, uint dwPhysicalMonitorArraySize, [Out] PHYSICAL_MONITOR[] pPhysicalMonitorArray);
-
-        [DllImport("dxva2.dll", EntryPoint = "GetMonitorBrightness")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GetMonitorBrightness(IntPtr handle, ref uint minimumBrightness, ref uint currentBrightness, ref uint maxBrightness);
-
-        [DllImport("dxva2.dll", EntryPoint = "SetMonitorBrightness")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool SetMonitorBrightness(IntPtr handle, uint newBrightness);
-       
-
-        private uint _physicalMonitorsCount = 1;
-        private PHYSICAL_MONITOR[] _physicalMonitorArray;
-
-        private IntPtr _firstMonitorHandle;
-
-        private uint _minValue = 0;
-        private uint _maxValue = 0;
-        private uint _currentValue = 0;
-
-        public BrightnessController(IntPtr windowHandle)
+        private static readonly int baudRate = 9600;
+        private static string buffer = string.Empty;
+        private static readonly int interval = 1500;
+        private static void Main(string[] args)
         {
-            uint dwFlags = 0u;
-            IntPtr ptr = MonitorFromWindow(windowHandle, dwFlags);
-            if (!GetNumberOfPhysicalMonitorsFromHMONITOR(ptr, ref _physicalMonitorsCount))
+            Console.WindowWidth = 80;
+            Console.WindowHeight = 20;
+            Console.CursorVisible = false;
+
+            WriteLine("                          --=== OWLOS Meteo UART ===--                         ", ConsoleColor.Yellow, ConsoleColor.Blue);
+            WriteLine("");
+            WriteLine("Searching for connected devices...", ConsoleColor.White);
+
+
+            SerialPort serialPort = new SerialPort
             {
-                throw new Exception("Cannot get monitor count!");
-            }
-            _physicalMonitorArray = new PHYSICAL_MONITOR[_physicalMonitorsCount];
-
-            if (!GetPhysicalMonitorsFromHMONITOR(ptr, _physicalMonitorsCount, _physicalMonitorArray))
+                BaudRate = baudRate
+            };
+            for (int i = 1; i < 24; i++)
             {
-                throw new Exception("Cannot get phisical monitor handle!");
-            }
-            _firstMonitorHandle = _physicalMonitorArray[0].hPhysicalMonitor;
 
-            if (!GetMonitorBrightness(_firstMonitorHandle, ref _minValue, ref _currentValue, ref _maxValue))
-            {
-                throw new Exception("Cannot get monitor brightness!");
-            }
-        }
+                serialPort.PortName = "COM" + i.ToString();
+                WriteLine(" try open port " + serialPort.PortName, ConsoleColor.Yellow);
 
-        public void SetBrightness(int newValue) // 0 ~ 100
-        {
-            newValue = Math.Min(newValue, Math.Max(0, newValue));
-            _currentValue = (_maxValue - _minValue) * (uint)newValue / 100u + _minValue;
-            SetMonitorBrightness(_firstMonitorHandle, _currentValue);
-        }
+                serialPort.DataReceived += new SerialDataReceivedEventHandler(sp_DataReceived);
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (_physicalMonitorsCount > 0)
+                try
                 {
-                    DestroyPhysicalMonitors(_physicalMonitorsCount, ref _physicalMonitorArray);
+                    serialPort.Open();
+                }
+                catch (Exception)
+                {
+                    WriteLine(" can't open " + serialPort.PortName, ConsoleColor.Red);
+                    WriteLine("");
+                    continue;
+                }
+                break;
+            }
+
+            if (!serialPort.IsOpen)
+            {
+                WriteLine("Device not found...", ConsoleColor.Red);
+                WriteLine("Press Enter to close this application");
+                Console.ReadLine();
+            }
+            else
+            {
+                Console.Clear();
+                WriteLine("                          --=== OWLOS Meteo UART ===--                         ", ConsoleColor.Yellow, ConsoleColor.Blue);
+                WriteLine("OWLOS Meteo at " + serialPort.PortName, ConsoleColor.Green);
+                while (true)
+                {
+                    if (serialPort.IsOpen)
+                    {
+                        try
+                        {
+                            WriteLine("TX->AT+L?", 0, 7);
+                            serialPort.Write("AT+L?\n");
+                            Thread.Sleep(interval);
+
+                            WriteLine("TX->AT+T?", 0, 7);
+                            serialPort.Write("AT+T?\n");
+                            Thread.Sleep(interval);
+
+                            WriteLine("TX->AT+H?", 0, 7);
+                            serialPort.Write("AT+H?\n");
+                            Thread.Sleep(interval);
+
+                            WriteLine("TX->AT+I?", 0, 7);
+                            serialPort.Write("AT+I?\n");
+                            Thread.Sleep(interval);
+                        }
+                        catch { }
+                    }
+                    else
+                    {
+                        WriteLine("OWLOS Meteo close port " + serialPort.PortName + ", please restart application", 0, 1, ConsoleColor.Red);
+                    }
                 }
             }
         }
-    }
-    internal class Program
-    {
 
-        [DllImport("user32.dll", EntryPoint = "FindWindow", SetLastError = true)]
-        public static extern IntPtr FindWindowByCaption(IntPtr zeroOnly, string lpWindowName);
-
-        private static BrightnessController brightnessController;
-
-        private  static string buffer = string.Empty;
-        private static void Main(string[] args)
+        private static void WriteLine(string text, ConsoleColor foregroundColor = ConsoleColor.Gray, ConsoleColor backgroundColor = ConsoleColor.Black)
         {
-            //git update-index --assume-unchanged  C:\Users\Egor3\Source\Repos\JullietIzmailova\Meteo\.vs\slnx.sqlite
-            IntPtr handle = FindWindowByCaption(IntPtr.Zero, Console.Title);
+            Console.ForegroundColor = foregroundColor;
+            Console.BackgroundColor = backgroundColor;
+            Console.WriteLine(text);
+        }
 
-            brightnessController = new BrightnessController(handle);
+        private static void WriteLine(string text, int x, int y, ConsoleColor foregroundColor = ConsoleColor.Gray, ConsoleColor backgroundColor = ConsoleColor.Black)
+        {
+            Console.CursorLeft = x;
+            Console.CursorTop = y;
+            Console.ForegroundColor = foregroundColor;
+            Console.BackgroundColor = backgroundColor;
+            Console.WriteLine(text);
+        }
 
-
-            Console.WriteLine("Meteo UART");
-
-            SerialPort _serialPort = new SerialPort("COM4",
-                                        9600,
-                                        Parity.None,
-                                        8,
-                                        StopBits.One)
+        private static bool ParseFloatFromRx(string TxData, out float data)
+        {
+            try
             {
-                Handshake = Handshake.None
-            };
+                TxData = TxData.Substring(buffer.IndexOf("? ") + 2);
+                TxData = TxData.Substring(0, TxData.IndexOf("\r"));
+                TxData = TxData.Replace('.', ',');
 
-            _serialPort.DataReceived += new SerialDataReceivedEventHandler(sp_DataReceived);
-
-            _serialPort.Open();
-
-            while (true)
-            {
-                _serialPort.Write("AT+L?\n");
-                Thread.Sleep(5000);
-                
+                if (float.TryParse(TxData, out data))
+                {
+                    return true;
+                }
             }
-
-            Console.ReadLine();
+            catch { }
+            data = float.NaN;
+            return false;
         }
 
         private static void sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
+
+            WriteLine("last session " + DateTime.Now.ToString(), 45, 1);
+
             SerialPort sp = (SerialPort)sender;
             string data = sp.ReadExisting();
 
             buffer = buffer + data;
+            WriteLine("RX<-" + buffer + "                      ", 0, 8);
 
             try
             {
-                
                 if (buffer.IndexOf("\r") != -1)
                 {
-                    Console.WriteLine(buffer);
                     if (buffer.IndexOf("OK AT+L? ") == 0)
                     {
-                        string strLight = buffer.Substring(buffer.IndexOf("? ") + 2);
-                        strLight = strLight.Substring(0, strLight.IndexOf("\r"));
-                        strLight = strLight.Replace('.', ',');
-                        float light = 0;
-                        if (float.TryParse(strLight, out light))
+                        if (ParseFloatFromRx(buffer, out float light))
                         {
-                            brightnessController.SetBrightness((int)(100 - light * 20));
+                            WriteLine("Light sensor: ", 1, 3, ConsoleColor.Yellow);
+                            WriteLine(light.ToString(), 15, 3, ConsoleColor.White);
+                        }
+                    }
+                    else
+                    if (buffer.IndexOf("OK AT+I? ") == 0)
+                    {
+                        if (ParseFloatFromRx(buffer, out float heat))
+                        {
+                            WriteLine("Heat index: ", 1, 4, ConsoleColor.Yellow);
+                            WriteLine(heat.ToString(), 15, 4, ConsoleColor.White);
+                        }
+                    }
+                    else
+                    if (buffer.IndexOf("OK AT+T? ") == 0)
+                    {
+                        if (ParseFloatFromRx(buffer, out float temperature))
+                        {
+                            WriteLine("Temperature sensor: ", 45, 3, ConsoleColor.Yellow);
+                            WriteLine(temperature.ToString(), 65, 3, ConsoleColor.White);
+                        }
+                    }
+                    else
+                    if (buffer.IndexOf("OK AT+H? ") == 0)
+                    {
+                        if (ParseFloatFromRx(buffer, out float humidity))
+                        {
+                            WriteLine("Humidity sensor: ", 45, 4, ConsoleColor.Yellow);
+                            WriteLine(humidity.ToString(), 65, 4, ConsoleColor.White);
                         }
                     }
                     buffer = string.Empty;
                 }
-                
             }
             catch { }
-
-            
         }
-
-
     }
 }
