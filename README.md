@@ -41,6 +41,7 @@ https://platformio.org/
 - Julliet Izmailova
 - Mykhailo Voit
 - Yan Sokolov (Dadras279@gmail.com)
+- Oleh Melnyk (Olgmeln@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
