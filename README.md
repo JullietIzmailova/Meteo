@@ -1,6 +1,6 @@
 # OWLOS Meteo
 
-![DIY Open Source Weather Station](https://github.com/KirinDenis/Meteo/raw/V3/resources/gallery/MeteoLogo.jpg)
+![DIY Open Source Weather Station](https://github.com/KirinDenis/Meteo/raw/main/resources/gallery/MeteoLogo.jpg)
 
 ## DIY Open Source Weather Station Based on Arduino UNO.
 
@@ -16,10 +16,12 @@
 - 3 LEDs
 - 4 Buttons
 - Squeaker (Buzzer, Speacker)
-- 8 resistors 10K
+- 6 resistors 10K
+
+![OWLOS Meteo schematic](https://github.com/KirinDenis/Meteo/raw/main/resources/gallery/MeteoSchematic.jpg)
 
 Estimated hardware budget 20$
 
-![3D STL models of boxes are also available for 3D printing](https://github.com/KirinDenis/Meteo/raw/V3/3DprintingSTL/back.stl)
+![3D STL models of boxes are also available for 3D printing](https://github.com/KirinDenis/Meteo/raw/main/3DprintingSTL/back.stl)
                                                         
 ### We use PlatforIO development environment
