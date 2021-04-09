@@ -3,7 +3,6 @@
 #include "LCDActuator.h"
 #include "src/libraries/LiquidCrystal_I2C/LiquidCrystal_I2C.h"
 
-
 LiquidCrystal_I2C *lcd;
 /*
 byte drop[8] = {
@@ -21,30 +20,26 @@ lcd.write(byte(0));
 */
 
 byte Lock[] = {
-  B01110,
-  B10001,
-  B10001,
-  B11111,
-  B11011,
-  B11011,
-  B11111,
-  B00000
-};
-
-
+    B01110,
+    B10001,
+    B10001,
+    B11111,
+    B11011,
+    B11011,
+    B11111,
+    B00000};
 
 //LiquidCrystal_I2C *lcd = nullptr;
-
 
 bool LCD_Setup()
 {
     lcd = new LiquidCrystal_I2C(LCD_PORT, LCD_COLS, LCD_ROWS); //port = 0x27 for PCF8574T and PCF8574AT for 0x3F, 16 cols, 2 raws
     lcd->init();
     Log("LCD setup complete");
-    return true;    
+    return true;
 }
 
-LiquidCrystal_I2C * LCD_Get_LCDPointer()
+LiquidCrystal_I2C *LCD_Get_LCDPointer()
 {
     return lcd;
 }
@@ -75,7 +70,7 @@ void LCD_Print_Right(String text)
     if (text.length() < 20)
     {
         String empty = "";
-        for (unsigned int i=0; i < 20 - text.length(); i++)
+        for (unsigned int i = 0; i < 20 - text.length(); i++)
         {
             empty += " ";
         }
@@ -94,15 +89,14 @@ void LCD_Print_Center(String text)
     if (text.length() < 20)
     {
         String empty = "";
-        for (unsigned int i=0; i < (20 - text.length()) / 2; i++)
+        for (unsigned int i = 0; i < (20 - text.length()) / 2; i++)
         {
             empty += " ";
         }
         text = empty + text + empty;
-    }    
-    lcd->print(text);        
+    }
+    lcd->print(text);
 }
-
 
 void LCD_Print_Line1(String text)
 {
@@ -150,4 +144,24 @@ void LCD_Print_CenterLine4(String text)
 {
     lcd->setCursor(0, 3);
     LCD_Print_Center(text);
+}
+
+void LCD_Print_Text(int column, int row, String text)
+{
+    lcd->setCursor(column, row);
+    lcd->print(text);
+}
+
+void LCD_Print_Number(int column, int row, unsigned n, int base)
+{
+    lcd->setCursor(column, row);
+
+    String s = String(base);
+
+    for (int i=0; i < (n-s.length()); i++ )
+    {
+       s = '0' + s;
+    }
+
+    lcd->print(s);
 }
