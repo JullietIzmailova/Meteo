@@ -9,6 +9,7 @@
 ### Parts used:
 - Arduino UNO R3 (CH340)
 - Arduino Sensor Shield V4.0
+- LCD I2C 20x4
 - DHT11
 - Clock DS3231
 - Light Sensor
