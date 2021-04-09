@@ -24,4 +24,18 @@ Estimated hardware budget 20$
 
 ![3D STL models of boxes are also available for 3D printing](https://github.com/KirinDenis/Meteo/raw/main/3DprintingSTL/back.stl)
                                                         
-### We use PlatforIO development environment
+### We use PlatformIO IDE
+https://platformio.org/
+
+### Special thanks to:
+DS3231 Real-Time Clock.
+![DS3231](http://www.jarzebski.pl/media/big/publish/2014/04/ds3231-dateformat.png
+
+Adafruit DHT Humidity & Temperature Sensor Library
+![Adafruit Unified Sensor Library](https://github.com/adafruit/Adafruit_Sensor)
+![DHT-sensor-library](https://github.com/adafruit/DHT-sensor-library)
+
+LiquidCrystal_I2C
+![LiquidCrystal_I2C](https://gitlab.com/tandembyte/liquidcrystal_i2c)
+
+
