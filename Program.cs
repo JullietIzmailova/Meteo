@@ -183,7 +183,7 @@ namespace Meteo
                     {
                         if (ParseFloatFromRx(buffer, out float light))
                         {
-                            WriteLine("Light sensor: ", 1, 3, ConsoleColor.Yellow);
+                            WriteLine("Light sensor: ", 0, 3, ConsoleColor.Yellow);
                             WriteLine(light.ToString(), 15, 3, ConsoleColor.White);
                         }
                     }
@@ -192,7 +192,7 @@ namespace Meteo
                     {
                         if (ParseFloatFromRx(buffer, out float heat))
                         {
-                            WriteLine("Heat index: ", 1, 4, ConsoleColor.Yellow);
+                            WriteLine("Heat index: ", 0, 4, ConsoleColor.Yellow);
                             WriteLine(heat.ToString(), 15, 4, ConsoleColor.White);
                         }
                     }
