@@ -37,5 +37,12 @@ https://platformio.org/
 
 ![LiquidCrystal_I2C](https://gitlab.com/tandembyte/liquidcrystal_i2c)
 
-
-
+### Copyright 2020, 2021 by:
+- Julliet Izmailova
+- Mykhailo Voit
+- Yan Sokolov (Dadras279@gmail.com)
+- Oleh Melnyk (Olgmeln@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+- Serhii Lehkii (sergey@light.kiev.ua)
