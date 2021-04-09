@@ -86,7 +86,7 @@ String Clock_Get_Date()
     }
     else
     {
-        return "0x0BADFOOD";
+        return "No clock";
     }
 }
 
@@ -141,7 +141,7 @@ String Clock_Get_Time()
     }
     else
     {
-        return "0x0BADFOOD";
+        return "No alarm";
     }
 }
 
@@ -182,7 +182,7 @@ String Clock_Get_Alarm1()
     }
     else
     {
-        return "0x0BADFOOD";
+        return "No alarm";
     }
 }
 
