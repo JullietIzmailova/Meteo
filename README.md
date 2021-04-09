@@ -30,7 +30,7 @@ https://platformio.org/
 ### Special thanks to:
 DS3231 Real-Time Clock.
 
-![DS3231](http://www.jarzebski.pl/media/big/publish/2014/04/ds3231-dateformat.png)
+![DS3231](http://www.jarzebski.pl/arduino/komponenty/zegar-czasu-rzeczywistego-rtc-ds3231.html)
 
 Adafruit DHT Humidity & Temperature Sensor Library
 
