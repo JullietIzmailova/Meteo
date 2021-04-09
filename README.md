@@ -39,6 +39,8 @@ https://platformio.org/
 
 ### Copyright 2020, 2021 by:
 - Julliet Izmailova
+- Mykhailo Voit
+- Yan Sokolov (Dadras279@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
