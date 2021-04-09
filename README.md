@@ -23,6 +23,9 @@
 Estimated hardware budget 20$
 
 ![3D STL models of boxes are also available for 3D printing](https://github.com/KirinDenis/Meteo/raw/main/3DprintingSTL/back.stl)
+
+### UART based console monitor
+![UART based console monitor](https://github.com/KirinDenis/Meteo/raw/main/resources/gallery/UART.jpg)
                                                         
 ### We use PlatformIO IDE
 https://platformio.org/
