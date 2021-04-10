@@ -77,8 +77,9 @@ void setup()
 
   LCDBigNumber_Setup();
 
-  LCD_Print_CenterLine1("Hello Meteo");
+  LCD_Print_CenterLine1("-= OWLOS Meteo =-");
   LCD_Print_CenterLine3("Please wait...");
+  delay(LOGO_DELAY);
 
 #ifdef DEBUG_SETUP
   delay(DEBUG_SETUP_DELAY);
