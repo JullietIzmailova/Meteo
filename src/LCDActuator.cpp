@@ -40,36 +40,41 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
+//I2C LCD driver based on OWLOS\src\libraries\LiquidCrystal_I2C\LiquidCrystal_I2C.cpp by https://gitlab.com/tandembyte/liquidcrystal_i2c
+//
+//Известные I2C адрес для разных типов PCF8574хх чипов (если перемычки не соединенны)
+//порт 0x27 для PCF8574T
+//порт 0x3F для PCF8574AT
+//если вам известны адреса для других типов - передайте их нам
+//https://raspberrypi.stackexchange.com/questions/39773/how-can-i-use-multiple-lcd-with-connected-via-i2c-on-same-raspberry-project
+//A0 | A1 | A2 | 8574 | 8574A
+//----+----+----+------+-------
+//  L |  L |  L | 0x20 | 0x38
+//  L |  L |  H | 0x21 | 0x39
+//  L |  H |  L | 0x22 | 0x3A
+//  L |  H |  H | 0x23 | 0x3B
+//  H |  L |  L | 0x24 | 0x3C
+//  H |  L |  H | 0x25 | 0x3D
+//  H |  H |  L | 0x26 | 0x3E
+//  H |  H |  H | 0x27 | 0x3F
+//
+//Хорошая лекция по I2C шине:
+//https://www.youtube.com/watch?v=_4KD29qnhNM
+//WiKi:
+//https://ru.wikipedia.org/wiki/I%C2%B2C
+//https://ru.wikipedia.org/wiki/%D0%96%D0%B8%D0%B4%D0%BA%D0%BE%D0%BA%D1%80%D0%B8%D1%81%D1%82%D0%B0%D0%BB%D0%BB%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D0%B4%D0%B8%D1%81%D0%BF%D0%BB%D0%B5%D0%B9
+//контроллер LCD
+//https://ru.wikipedia.org/wiki/HD44780
+
+//примечание: драйвер LCD требует I2C адрес подчиненного устройства на шине. Для совместимости с общей архитектурой драйверов - I2C адрес представлен внешне в роли
+//пина. Что делает возможность управления адресом из PinService.
+
 #include "config.h"
 #include "log.h"
 #include "LCDActuator.h"
 #include "src/libraries/LiquidCrystal_I2C/LiquidCrystal_I2C.h"
 
 LiquidCrystal_I2C *lcd;
-/*
-byte drop[8] = {
-    0b00100,
-    0b01010,
-    0b10001,
-    0b10001,
-    0b10001,
-    0b01110,
-    0b00000,
-    0b00000};
-//lcd.createChar(0, drop);
-lcd.write(byte(0));
-  lcd.print(char(223));
-*/
-
-byte Lock[] = {
-    B01110,
-    B10001,
-    B10001,
-    B11111,
-    B11011,
-    B11011,
-    B11111,
-    B00000};
 
 //LiquidCrystal_I2C *lcd = nullptr;
 
@@ -200,9 +205,9 @@ void LCD_Print_Number(int column, int row, unsigned n, int base)
 
     String s = String(base);
 
-    for (uint8_t i=0; i < (n-s.length()); i++ )
+    for (uint8_t i = 0; i < (n - s.length()); i++)
     {
-       s = '0' + s;
+        s = '0' + s;
     }
 
     lcd->print(s);

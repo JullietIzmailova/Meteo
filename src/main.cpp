@@ -54,64 +54,81 @@ OWLOS распространяется в надежде, что она буде
 
 #include "ScreenMeteo.h"
 #include "ScreenClock.h"
-#include "ScreenSetClock.h"
 #include "ScreenAlarm.h"
 
+//Счетчик количество loop() итераций которое будет пропущено перед очередным 
+//выводам данных на LCD экран. Инициализируется предельным значением MAIN_LOOP_COUNT_LIMIT, 
+//таким образом после setup() - первая этерация loop() выведет данные на экран и перейдет в 
+//режим ожидания (сбросит счетчик Loop_Count в ноль), пока счетик Loop_Count сново не 
+//достигнет значения MAIN_LOOP_COUNT_LIMIT. Каждый loop() увеличивает  Loop_Count на единицу. 
 int Loop_Count = MAIN_LOOP_COUNT_LIMIT;
 
+//Текущий режим LCD экрана, влияет на вывод данных 
 int App_Mode = MODE_METEO;
+//Предидущий режим LCD экрана, дает возможность оценить - изменил ли пользователь режим экрана
 int App_Saved_Mode = MODE_METEO;
+//Текущий элемент настройки (который пользователь может изменять)
 int currentEdit = 0;
+//Используется, для подстветки текущего элемента настройки
 bool blink = false;
+//Используется будильником для отключения сигнала
 bool AnyKey = false;
 
 //Setup section -------------------------------
+//Значения параметров настройки смотрите в файлы config.h
 void setup()
 {
-  Serial.begin(SERIAL_BAUD);
-  delay(SETUP_DELAY);
+  Serial.begin(SERIAL_BAUD); //Устанавливаем скорость UART (Serial)
+  delay(SETUP_DELAY);        //Даем время соединеному устройству принять новую скорость UART (Serial) (смотрите: config.h)
   Log("Do setup...");
 
-  LCD_Setup();
-  LCD_Set_Light(true);
+  LCD_Setup();         //Инициализируем дисплей (параметры дисплея и номер порта смотрите config.h)
+  LCD_Set_Light(true); //Включаем подсветку дисплея
 
-  LCDBigNumber_Setup();
+  LCDBigNumber_Setup(); //Инициализируем таблицы переопределения симводов дисплея, для прорисовки "больших" цифр
 
-  LCD_Print_CenterLine1("-= OWLOS Meteo =-");
+  LCD_Print_CenterLine1("-= OWLOS Meteo =-"); //выводим приветствие
   LCD_Print_CenterLine3("Please wait...");
-  delay(LOGO_DELAY);
+  delay(LOGO_DELAY); //задержка для экрана приветствия
 
+//если определен этот Define - инициализация устройств проводится с печатью отладочной информации на LCD и определенным
+//интервалом задержки после инициализации каждого подключеного устройства
 #ifdef DEBUG_SETUP
-  delay(DEBUG_SETUP_DELAY);
 
-  Buttons_Setup();
+  Buttons_Setup(); //инициализация кнопок
   LCD_Print_CenterLine2("Buttons setup...OK");
   delay(DEBUG_SETUP_DELAY);
 
-  BUZZER_Setup();
+  BUZZER_Setup(); //инициализация "пищалки"
   LCD_Print_CenterLine2("Buzzer setup...OK");
   delay(DEBUG_SETUP_DELAY);
 
-  LIGHT_Setup();
-  LCD_Print_CenterLine2("Light setup...OK");
-  delay(DEBUG_SETUP_DELAY);
-
-  LED_Setup();
+  LED_Setup(); //инициализация светодиодов
   LCD_Print_CenterLine2("Led setup...OK");
   delay(DEBUG_SETUP_DELAY);
 
-  DHT_Setup();
+  LIGHT_Setup(); //инициализация сенсора освещения
+  LCD_Print_CenterLine2("Light setup...OK");
+  delay(DEBUG_SETUP_DELAY);
+
+  DHT_Setup(); //инициализация сенсора температуры-влажности
   LCD_Print_CenterLine2("DHT setup...OK");
   delay(DEBUG_SETUP_DELAY);
 
-  Clock_Setup();
-  LCD_Print_CenterLine2("Clock setup...OK");
+  if (Clock_Setup()) //инициализация часов реального времени
+  {
+    LCD_Print_CenterLine2("Clock setup...OK");
+  }
+  else
+  {
+    LCD_Print_CenterLine2("Clock setup...Bad");
+  }
   delay(DEBUG_SETUP_DELAY);
   LCD_Print_CenterLine2("");
   LCD_Print_CenterLine3("Setup complete");
   delay(DEBUG_SETUP_DELAY);
   Log("Setup complete");
-#else
+#else //обычная, неотладочная инициализация устройств
   Buttons_Setup();
 
   BUZZER_Setup();
@@ -125,39 +142,64 @@ void setup()
   Clock_Setup();
 #endif
 }
+//ENDOF Setup Section ----------------------------------------
 
 int Saved_Mode = MODE_NULL;
 
+//Loop Section -----------------------------------------------
 void loop()
 {
-  // Wait a few seconds between measurements.
+  //Каждый loop() вызывает задержку перед очередной итерацией - подробнее смотрите config.h->MAIN_LOOP_DELAY
   delay(MAIN_LOOP_DELAY);
 
-  UARTLoop();
+  UARTLoop(); //Обслуживание комуникации с устройством подключенным по UART (Serial)
 
-  Buttons_Loop();
+  Buttons_Loop(); //Считывание и анализ состояния кнопок после предидущего loop()
 
+  //Если одна из трех кнопок нажата
   if (Get_Button1_ShortPress() || Get_Button2_ShortPress() || Get_Button3_ShortPress())
   {
-    AnyKey = true;
+    AnyKey = true; //взводим этот флажек - его использует будильник для отключения сигнала Alarm
+    //таким образом, пользователь может отключить звук будильника нажатием на любую кнопку
   }
 
+  //Внимание:
+  //Далее следуют вызовы процедур вывода данных на экран.
+  //Весь код связаный с обслуживанием и выводом данных на экран хранится в соответствующих модулях:
+  //ScreenMeteo - обслуживыет режимом метеостанции
+  //ScreenClock - обслуживает часы реального времени
+  //ScreenAlarm - обслуживает будильник
+
+  //Изучите структуру этих модулей перед тем как ознакамливатся с кодом ниже.
+  //В зависимости от текущего режима экрана, главная процедура loop() -> мы в ней сейчас находимся :)
+  //вызывает соответсвующие процедуры для обработки нажатия кнопок и вывода данных на экран -> через
+  //определенные интервалы времени. (нажатие кнопок обрабатываются чаще, чем выводя данных - таким образом
+  //мы добиваемся отзывчевой реакции на нажатие пользователем кнопок и не нагружаем контроллер избыточным
+  //выводом данных)
+
+  //---
+  //Индекс текущего режима экрана (Screen Mode) хранится в переменной App_Mode
+  //O режимах экрана можно прочитать в config.h -> #define MODE_NNN
+  //Сохраняем значение этой переменной и анализируем нажимал ли пользователь кнопки #2 и #3
+  //Нажатие этих кнопок в режимах просмотра данных - приведет к переключению экрана в следующий режим.
+  //Переключение режимов экрана закальцована ->Meteo_Mode->Clock_Mode->Alarm_Mode->Meteo_Mode->
   App_Saved_Mode = App_Mode;
+  //Если не один из режимов настройки
   if ((App_Mode != MODE_SET_METEO) && (App_Mode != MODE_SET_CLOCK) && (App_Mode != MODE_SET_ALARM))
   {
-    if (Get_Button2_ShortPress() == true)
+    if (Get_Button2_ShortPress() == true) //Если нажата кнопка #2 ("листание" экранов влево)
     {
-      if (App_Mode > MODE_METEO)
+      if (App_Mode > MODE_METEO) //Если текущий режим не режим просмотра метео данных
       {
-        App_Mode--;
+        App_Mode--; //"Листаем" экраны влево
       }
       else
       {
-        App_Mode = MODE_ALARM;
+        App_Mode = MODE_ALARM; //переходим к последнему экрану (закольцовываем просмотр экранов)
       }
     }
 
-    if (Get_Button3_ShortPress() == true)
+    if (Get_Button3_ShortPress() == true) //Если нажата кнопка #3 листаем экраны в право (также как и для кнопки #2 но в другую сторону)
     {
       if (App_Mode < MODE_ALARM)
       {
@@ -170,8 +212,10 @@ void loop()
     }
   }
 
-  if (App_Saved_Mode != App_Mode) // is previous state of application the same?
+  //Теперь проверяем переключил ли пользователь режим просмотра экрана
+  if (App_Saved_Mode != App_Mode) //Если да - подготавливаем экран к выводу новых данных (очищаем данные предидущего экрана)
   {
+    //Только режимы просмотра данных - режимы настройки выбираются отдельно
     switch (App_Mode)
     {
     case MODE_METEO:
@@ -183,12 +227,11 @@ void loop()
     case MODE_ALARM:
       Screen_Alarm_Init();
       break;
-    case MODE_SET_CLOCK:
-      Screen_SetClock_Init();
-      break;
     }
   }
 
+  //В зависемости от текущего режима экрана - вызываем соответствующие процедуры
+  //обработки нажатия кнопок в модулях обслуживающих текущий экран.
   switch (App_Mode)
   {
   case MODE_METEO:
@@ -205,12 +248,15 @@ void loop()
     break;
   }
 
-  //Slow loop
+  //После обработок кнопок, так же в зависемости от текущего режима экрана
+  //вызываем процедуры вывода данных, но с большей задержкой (или другими словами - реже) чем обрабатываем кнопки.
+  //Счетчик Loop_Count подсчитывает колличество loop() итераций которые будут пропущены.
+  //MAIN_LOOP_COUNT_LIMIT определят колличество loop() которое надо пропустить.
   Loop_Count++;
   if (Loop_Count > MAIN_LOOP_COUNT_LIMIT)
   {
-    Loop_Count = 0;
-
+    Loop_Count = 0; //Сбрасывам счетчик пропущеных loop()
+    //Выводим данные в зависемости от текущего режима
     switch (App_Mode)
     {
     case MODE_METEO:
@@ -228,3 +274,4 @@ void loop()
     }
   }
 }
+//ENDOF Loop Section -------------------------------------------
