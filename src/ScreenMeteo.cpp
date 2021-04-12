@@ -53,7 +53,7 @@ OWLOS распространяется в надежде, что она буде
 
 #include "ScreenMeteo.h"
 
-//Вызывается когда экран переключен в режимы  MODE_METEO или MODE_SET_METEO
+//Вызывается когда экран переключен в режимы MODE_METEO или MODE_SET_METEO
 void Screen_Meteo_Init()
 {
     LCD_Clear();
