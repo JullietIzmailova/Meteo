@@ -155,6 +155,13 @@ void Screen_Meteo_Draw()
 
     //Date Time
     LCD_Print_CenterLine3(" ");
+    
+    if(Clock_Get_Setup())
+    {
     LCD_Print_CenterLine4(Clock_Get_Date() + " " + Clock_Get_Time());
+    }
+    else{
+        LCD_Print_CenterLine4(NO_CLOCK);
+    }
 
 }

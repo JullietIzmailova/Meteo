@@ -253,20 +253,35 @@ void Screen_Clock_Draw()
 {
     if (App_Mode != MODE_SET_CLOCK)
     {
-        LCDBigNumber_Print_Height2_Left(0, String(Clock_Get_Time()));
-        LCD_Print_CenterLine3(" ");
-        LCD_Print_CenterLine4(String(Clock_Get_Date()));
-        if (Clock_Get_Alarm1_Status())
+         
+
+        if(Clock_Get_Setup())
         {
+          LCDBigNumber_Print_Height2_Left(0, String(Clock_Get_Time()));
+          LCD_Print_CenterLine3(" ");
+          LCD_Print_CenterLine4(String(Clock_Get_Date()));
+          
+          if (Clock_Get_Alarm1_Status())
+          {
             LCD_Print_Text(20-3, 3, "<A>");
-        }
-        else 
-        {
+          }
+          else 
+          {
             LCD_Print_Text(20-3, 3, "  ");
+          }
         }
+        else
+        {
+          LCD_Print_CenterLine1("Clock");
+          LCD_Print_CenterLine3(NO_CLOCK);
+        }  
     }
     else
     {
+        //Log("Set time");   
+
+        if(Clock_Get_Setup())
+        { 
         LCD_Print_Text(0, 2, "Set date:");
         //Day -----------------------------------
         if ((currentEdit == EDIT_DAY) && (blink))
@@ -329,5 +344,11 @@ void Screen_Clock_Draw()
         }
 
         blink = !blink;
+        }
+        else
+        {
+          LCD_Print_CenterLine1("Clock set mode");
+          LCD_Print_CenterLine3(NO_CLOCK);
+        }
     }
 }

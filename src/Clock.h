@@ -1,7 +1,9 @@
 #include <Arduino.h>
 #include "src/libraries/DS3231/DS3231.h"
 
+#define NO_CLOCK "Clock error [0x15]"
 bool Clock_Setup();
+bool Clock_Get_Setup();
 RTCDateTime Get_DateTime();
 void Clock_Set_DateTime(String DATE, String TIME);
 void Clock_Set_DateTime(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second );

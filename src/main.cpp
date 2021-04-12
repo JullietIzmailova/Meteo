@@ -54,7 +54,6 @@ OWLOS распространяется в надежде, что она буде
 
 #include "ScreenMeteo.h"
 #include "ScreenClock.h"
-#include "ScreenSetClock.h"
 #include "ScreenAlarm.h"
 
 int Loop_Count = MAIN_LOOP_COUNT_LIMIT;
@@ -181,9 +180,6 @@ void loop()
       break;
     case MODE_ALARM:
       Screen_Alarm_Init();
-      break;
-    case MODE_SET_CLOCK:
-      Screen_SetClock_Init();
       break;
     }
   }
