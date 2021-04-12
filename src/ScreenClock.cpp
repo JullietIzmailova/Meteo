@@ -277,88 +277,102 @@ void Screen_Clock_Draw()
     //Если сейчас режим просмотра времени
     if (App_Mode != MODE_SET_CLOCK)
     {
-        //Выводим значение времени большими цифрами
-        LCDBigNumber_Print_Height2_Left(0, String(Clock_Get_Time()));
-        LCD_Print_CenterLine3(" ");
-        //Выводим текующею дату
-        LCD_Print_CenterLine4(String(Clock_Get_Date()));
-        //Если будильник установлен выводым символы "<A>" в правом нижнем углу экрана
-        if (Clock_Get_Alarm1_Status())
+        if(Clock_Get_Setup())
         {
+          //Выводим значение времени большими цифрами
+          LCDBigNumber_Print_Height2_Left(0, String(Clock_Get_Time()));
+          LCD_Print_CenterLine3(" ");
+          //Выводим текующею дату
+          LCD_Print_CenterLine4(String(Clock_Get_Date()));
+          //Если будильник установлен выводым символы "<A>" в правом нижнем углу экрана
+          if (Clock_Get_Alarm1_Status())
+          {
             LCD_Print_Text(20 - 3, 3, "<A>");
-        }
-        else //Если будильник не установлен, очищаем то место где были символы "<A>" тремя пробелами
-        {
+          }
+          else //Если будильник не установлен, очищаем то место где были символы "<A>" тремя пробелами
+          {
             LCD_Print_Text(20 - 3, 3, "  ");
+          }
+        }
+        else
+        {
+           LCD_Print_CenterLine4(NO_CLOCK);
         }
     }
     else //Если режим настройки даты и времени
     {
         LCD_Print_Text(0, 2, "Set date:");
-        //Переменая currentEdit содержит индекс текущего редактируемого элемента
-        //Флажек blink изменяет свое значение через определеный интервал времени
-        //Таким образом текущий выбранный эелемнт "мигает" на экране
-        //Day -----------------------------------
-        //Если сейчас редактируется день и флажек blink взведен - стираем элемент с экрана
-        if ((currentEdit == EDIT_DAY) && (blink))
-        {
-            LCD_Print_Text(10, 3, "  ");
-        }
-        else //иначе рисуем эелемент в определенной позиции как обычно
-        {
-            LCD_Print_Number(10, 3, 2, editDT.day);
-        }
-        LCD_Print_Text(12, 3, ".");
-        //Month -----------------------------------
-        if ((currentEdit == EDIT_MONTH) && (blink))
-        {
-            LCD_Print_Text(13, 3, "  ");
-        }
-        else
-        {
-            LCD_Print_Number(13, 3, 2, editDT.month);
-        }
-        LCD_Print_Text(15, 3, ".");
-        //Year -----------------------------------
-        if ((currentEdit == EDIT_YEAR) && (blink))
-        {
-            LCD_Print_Text(16, 3, "    ");
-        }
-        else
-        {
-            LCD_Print_Number(16, 3, 4, editDT.year);
-        }
-        LCD_Print_Text(0, 0, "Set time:");
-        //Houre -----------------------------------
-        if ((currentEdit == EDIT_HOURE) && (blink))
-        {
-            LCD_Print_Text(10, 1, "  ");
-        }
-        else
-        {
-            LCD_Print_Number(10, 1, 2, editDT.hour);
-        }
-        LCD_Print_Text(12, 1, ":");
-        //Minute -----------------------------------
-        if ((currentEdit == EDIT_MINUTE) && (blink))
-        {
-            LCD_Print_Text(13, 1, "  ");
-        }
-        else
-        {
-            LCD_Print_Number(13, 1, 2, editDT.minute);
-        }
-        LCD_Print_Text(15, 1, ":");
-        //Seconds -----------------------------------
-        if ((currentEdit == EDIT_SECONDS) && (blink))
-        {
-            LCD_Print_Text(16, 1, "  ");
-        }
-        else
-        {
-            LCD_Print_Number(16, 1, 2, editDT.second);
-        }
 
-        blink = !blink;
+        if(Clock_Get_Setup()){
+            //Переменая currentEdit содержит индекс текущего редактируемого элемента
+            //Флажек blink изменяет свое значение через определеный интервал времени
+            //Таким образом текущий выбранный эелемнт "мигает" на экране
+            //Day -----------------------------------
+            //Если сейчас редактируется день и флажек blink взведен - стираем элемент с экрана
+            if ((currentEdit == EDIT_DAY) && (blink))
+            {
+            LCD_Print_Text(10, 3, "  ");
+            }
+            else //иначе рисуем эелемент в определенной позиции как обычно
+            {
+              LCD_Print_Number(10, 3, 2, editDT.day);
+            }
+               LCD_Print_Text(12, 3, ".");
+             //Month -----------------------------------
+            if ((currentEdit == EDIT_MONTH) && (blink))
+            {
+                LCD_Print_Text(13, 3, "  ");
+            }
+            else
+            {
+              LCD_Print_Number(13, 3, 2, editDT.month);
+            }
+              LCD_Print_Text(15, 3, ".");
+            //Year -----------------------------------
+            if ((currentEdit == EDIT_YEAR) && (blink))
+            {
+              LCD_Print_Text(16, 3, "    ");
+            }
+            else
+            {
+              LCD_Print_Number(16, 3, 4, editDT.year);
+            }
+            LCD_Print_Text(0, 0, "Set time:");
+            //Houre -----------------------------------
+            if ((currentEdit == EDIT_HOURE) && (blink))
+            {
+              LCD_Print_Text(10, 1, "  ");
+            }
+            else
+            {
+              LCD_Print_Number(10, 1, 2, editDT.hour);
+            }
+              LCD_Print_Text(12, 1, ":");
+             //Minute -----------------------------------
+            if ((currentEdit == EDIT_MINUTE) && (blink))
+            {
+              LCD_Print_Text(13, 1, "  ");
+            }
+            else
+            {
+              LCD_Print_Number(13, 1, 2, editDT.minute);
+            }
+            LCD_Print_Text(15, 1, ":");
+            //Seconds -----------------------------------
+            if ((currentEdit == EDIT_SECONDS) && (blink))
+            {
+              LCD_Print_Text(16, 1, "  ");
+            }
+            else
+            {
+              LCD_Print_Number(16, 1, 2, editDT.second);
+            }
+
+            blink = !blink;
+        }
+        else
+        {
+           LCD_Print_CenterLine4(NO_CLOCK);            
+        }
     }
 }
