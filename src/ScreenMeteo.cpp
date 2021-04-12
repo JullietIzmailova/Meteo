@@ -53,19 +53,17 @@ OWLOS распространяется в надежде, что она буде
 
 #include "ScreenMeteo.h"
 
-int leftPosition = 0;
-
-extern int App_Mode;
-extern int App_Saved_Mode;
-
-bool hoursEdit = true;
-
+//Вызывается когда экран переключен в режимы  MODE_METEO или MODE_SET_METEO
 void Screen_Meteo_Init()
 {
     LCD_Clear();
     Screen_Meteo_Draw();
 }
 
+//Для режимов экрана: MODE_METEO и MODE_SET_METEO
+//Главная процедура loop() вызывает эту процедуру каждый раз когда этот экран активен. 
+//Таким образом кнопки нажатые пользователем для этого экрана будуту обработаны этой 
+//процедурой. Подобные процедуры для других режимов экрана - вызваны не будут. 
 void Screen_Meteo_Read_Buttons()
 {
     //FFR: Meteo modes
@@ -98,9 +96,14 @@ void Screen_Meteo_Read_Buttons()
     */
 }
 
+//Для режимов экрана: MODE_METEO и MODE_SET_METEO
+//Главная процедура loop() вызывает эту процедуру через определенный интервал и каждый раз когда этот 
+//экран активен. Все данные относящиеся к данному режиму экрана должны быть выведены этой процедурой. 
 void Screen_Meteo_Draw()
 {
 
+    //Получаем Heat Index и в зависемости от его значения зажигаем зеленый, желтый или красный светодиоды
+    //Подробнее смотрите config.h HEAT_INDEX_LEVEL_NNN  
     float current_heat_index = DHT_Get_Heat_Index();
 
     if (current_heat_index > HEAT_INDEX_LEVEL_LOW)
@@ -129,19 +132,23 @@ void Screen_Meteo_Draw()
     //LCD_Print_Line4("A => " + String(lightValue) + " Ph => " + String(LIGHT_GET_data()));
 #endif
 
-    //Temperature
+    //Выводим текущее значение температуры полученное от DHT сенсора
+    //Используем (int) что бы убрать float часть, она не нужна пользователю (пример 25.44 переводим в 25)
     LCDBigNumber_Print_Height2_Left(0, String((int)DHT_Get_Temperature()));
     LCD_Print_Text(6, 0, String(char(223)));
     LCD_Print_Text(6, 1, "C");
 
-    //Heat index
+    //Выводим значение Heat Index на экран (оно так же дублируется светодиодами)
+    //На экране нам необходимо "забить" пробелами оставшиеся символы, что бы избежать "мусора" на экране
+    //от предидущих прорисовок
     String heatStr = " H:" + String((int)DHT_Get_Heat_Index());
     for (int i = 0; i < 7 - heatStr.length(); i++)
     {
         heatStr += " ";
     }
     LCD_Print_Text(7, 0, heatStr);
-    //Light
+
+    //Показание сенсора освещенности, так же как Heat Index с удалением "мусора"
     String lightStr = " L:" + String((int)LIGHT_GET_data());
     for (int i = 0; i < 7 - lightStr.length(); i++)
     {
@@ -149,11 +156,11 @@ void Screen_Meteo_Draw()
     }
     LCD_Print_Text(7, 1, lightStr);
 
-    //Humidity
+    //Выводим значение влажности
     LCDBigNumber_Print_Height2_Offset(0, 20 - 7, String((int)DHT_Get_Humidity()));
     LCD_Print_Text(19, 1, "%");
 
-    //Date Time
+    //Выводим текущею дату и время
     LCD_Print_CenterLine3(" ");
     
     if(Clock_Get_Setup())

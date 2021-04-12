@@ -59,17 +59,6 @@ bool Clock_Setup()
     //CLOCK
     if (clock->begin())
     {
-        // Set sketch compiling time
-        //clock->setDateTime(__DATE__, __TIME__);
-
-        //  clock->armAlarm1(false);
-
-        //        clock->clearAlarm1();
-
-        //        clock->setAlarm1(0, 22, 26, 00, DS3231_MATCH_H_M_S);
-
-        //        clock->armAlarm1(true);
-
         //TODO: FFR: clock->begin check I2C
         dt = clock->getDateTime();
         if (dt.year != 0)
