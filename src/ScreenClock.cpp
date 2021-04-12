@@ -296,6 +296,7 @@ void Screen_Clock_Draw()
         }
         else
         {
+           LCD_Print_CenterLine1("Clock");
            LCD_Print_CenterLine4(NO_CLOCK);
         }
     }
