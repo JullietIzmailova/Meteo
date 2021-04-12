@@ -40,7 +40,6 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-
 #include "config.h"
 #include "log.h"
 #include "LCDBigNumbers.h"
@@ -53,12 +52,12 @@ OWLOS распространяется в надежде, что она буде
 #include "Buttons.h"
 #include "ScreenClock.h"
 
-extern int App_Mode;
-extern int App_Saved_Mode;
+extern int App_Mode; //текущий режик экрана из main
 
-RTCDateTime editDT;
-RTCDateTime saveDT;
+RTCDateTime editDT; //сохраняется текущая дата и время при настройке
+RTCDateTime saveDT; //дублируется сохраненя дата и время при настройке
 
+//индексы элементов редактирования
 #define EDIT_HOURE 0
 #define EDIT_MINUTE 1
 #define EDIT_SECONDS 2
@@ -66,31 +65,41 @@ RTCDateTime saveDT;
 #define EDIT_MONTH 4
 #define EDIT_YEAR 5
 
+//индекс текущего элемента редактирования
 extern int currentEdit;
 
+//флажек обеспечивающий "мигания" текущего элемента редактирования на экране
 extern bool blink;
 
+//Вызывается когда экран переключен в режимы MODE_CLOCK или MODE_SET_CLOCK
 void Screen_Clock_Init()
 {
     LCD_Clear();
     Screen_Clock_Draw();
 }
 
+//Для режимов экрана: MODE_CLOCK и MODE_SET_CLOCK
+//Главная процедура loop() вызывает эту процедуру каждый раз когда этот экран активен.
+//Таким образом кнопки нажатые пользователем для этого экрана будуту обработаны этой
+//процедурой. Подобные процедуры для других режимов экрана - вызваны не будут.
 void Screen_Clock_Read_Buttons()
 {
+    //Если кнопка #1 была долго зажата, переключаем режимы просмотр-настройка
     if (Get_Button1_LongPress() == true)
     {
+        //Переходим в режим настройки если были в просмотра
         if (App_Mode != MODE_SET_CLOCK)
         {
-            App_Mode = MODE_SET_CLOCK;
-            currentEdit = EDIT_HOURE;            
-            editDT = Get_DateTime();
-            saveDT = editDT;
-            LCD_Clear();
+            App_Mode = MODE_SET_CLOCK; //выбираем режим экрана - настройка часов
+            currentEdit = EDIT_HOURE;  //выставляем первый редактируемый элемент "часы", далее следуют "минуты", "секунды"...
+            editDT = Get_DateTime();   //считываем текущее время, его предложим пользователю изменить
+            saveDT = editDT;           //сохраняем считаное время в эту переменную, editDT и saveDT на данном этапе одинаковые - так мы сможем понять редактировал ли пользователь время
+            LCD_Clear();               //очищаем экран
         }
-        else
+        else //Иначе переходим в режим просмотра если были в настройках
         {
-            App_Mode = MODE_CLOCK;
+            App_Mode = MODE_CLOCK; //выбираем режим просмотрa
+            //проверяем редактировал ли пользователь время и дату, если да устанавливаем новое время и дату
             if ((saveDT.year != editDT.year) ||
                 (saveDT.month != editDT.month) ||
                 (saveDT.day != editDT.day) ||
@@ -103,42 +112,49 @@ void Screen_Clock_Read_Buttons()
         }
     }
 
+    //если режим настройки и пользователь нажал кнопку #1 (короткое нажатие) переходим к следующему элементу настройки
+    //перемещение по элементам зациклено - часы, минуты, секунды, день, месяц, год - часы, минуты...
     if ((Get_Button1_ShortPress() == true) && (App_Mode == MODE_SET_CLOCK))
     {
-        if (currentEdit >= EDIT_YEAR)
+        if (currentEdit >= EDIT_YEAR) //если перешли за пределы редактированя года, то уходим "на круг"
         {
             currentEdit = EDIT_HOURE;
         }
         else
         {
-            currentEdit++;
+            currentEdit++; //выбираем следующий элемент
         }
     }
 
+    //если режим настройки и пользователь нажал кнопку #2 (короткое нажатие) уменьшаем значение текущего элемента редактирования
     if ((Get_Button2_ShortPress() == true) && (App_Mode == MODE_SET_CLOCK))
     {
+        //если текущий элемент "год"
         if (currentEdit == EDIT_YEAR)
         {
-            if (editDT.year > 2021)
+            if (editDT.year > 2021) //если год более чем 2021 уменьшаяем значение
             {
                 editDT.year--;
             }
             else
             {
-                editDT.year = 2021;
+                editDT.year = 2021; //младьше 2021 года быть не может
+                //^^^ если вы используете этот код при постройке машины времени, измените этот параметр на расчетный предельный
+                //для вашего устройства.
             }
-        }
+        } //если текущий элемент месяц
         else if (currentEdit == EDIT_MONTH)
         {
+            //если это не Январь уменьшаем значение
             if (editDT.month > 1)
             {
                 editDT.month--;
             }
             else
             {
-                editDT.month = 12;
+                editDT.month = 12; //если Январь то закольцовываем выбо, после Января -Декабрь, потом Ноябрь и так далее
             }
-        }
+        } //день также как и месяц с закольцовкой после 31
         else if (currentEdit == EDIT_DAY)
         {
             if (editDT.day > 1)
@@ -149,7 +165,7 @@ void Screen_Clock_Read_Buttons()
             {
                 editDT.day = 31;
             }
-        }
+        } //часы
         else if (currentEdit == EDIT_HOURE)
         {
             if (editDT.hour > 0)
@@ -160,7 +176,7 @@ void Screen_Clock_Read_Buttons()
             {
                 editDT.hour = 23;
             }
-        }
+        } //минуты
         else if (currentEdit == EDIT_MINUTE)
         {
             if (editDT.minute > 0)
@@ -171,7 +187,7 @@ void Screen_Clock_Read_Buttons()
             {
                 editDT.minute = 59;
             }
-        }
+        } //секунды
         else if (currentEdit == EDIT_SECONDS)
         {
             if (editDT.second > 0)
@@ -184,12 +200,16 @@ void Screen_Clock_Read_Buttons()
             }
         }
     }
-
+    //если режим настройки и пользователь нажал кнопку #3 (короткое нажатие) увеличиваем значение текущего элемента редактирования
+    //Так же как для кнопки #2 только увеличение (в обратную сторону)
     if ((Get_Button3_ShortPress() == true) && (App_Mode == MODE_SET_CLOCK))
     {
         if (currentEdit == EDIT_YEAR)
         {
             editDT.year++;
+            //Please note:
+            //- сейчас возможности вашего устройство для перемещения во времени ограничены только uint_16t, учтите этот двухбайтовый факт.
+            //- данный код строго не рекомендован для использования в далеком будущем города Ember.
         }
         else if (currentEdit == EDIT_MONTH)
         {
@@ -249,31 +269,42 @@ void Screen_Clock_Read_Buttons()
     }
 }
 
+//Для режимов экрана: MODE_CLOCK и MODE_SET_CLOCK
+//Главная процедура loop() вызывает эту процедуру через определенный интервал и каждый раз когда этот
+//экран активен. Все данные относящиеся к данному режиму экрана должны быть выведены этой процедурой.
 void Screen_Clock_Draw()
 {
+    //Если сейчас режим просмотра времени
     if (App_Mode != MODE_SET_CLOCK)
     {
+        //Выводим значение времени большими цифрами
         LCDBigNumber_Print_Height2_Left(0, String(Clock_Get_Time()));
         LCD_Print_CenterLine3(" ");
+        //Выводим текующею дату
         LCD_Print_CenterLine4(String(Clock_Get_Date()));
+        //Если будильник установлен выводым символы "<A>" в правом нижнем углу экрана
         if (Clock_Get_Alarm1_Status())
         {
-            LCD_Print_Text(20-3, 3, "<A>");
+            LCD_Print_Text(20 - 3, 3, "<A>");
         }
-        else 
+        else //Если будильник не установлен, очищаем то место где были символы "<A>" тремя пробелами
         {
-            LCD_Print_Text(20-3, 3, "  ");
+            LCD_Print_Text(20 - 3, 3, "  ");
         }
     }
-    else
+    else //Если режим настройки даты и времени
     {
         LCD_Print_Text(0, 2, "Set date:");
+        //Переменая currentEdit содержит индекс текущего редактируемого элемента
+        //Флажек blink изменяет свое значение через определеный интервал времени
+        //Таким образом текущий выбранный эелемнт "мигает" на экране
         //Day -----------------------------------
+        //Если сейчас редактируется день и флажек blink взведен - стираем элемент с экрана
         if ((currentEdit == EDIT_DAY) && (blink))
         {
             LCD_Print_Text(10, 3, "  ");
         }
-        else
+        else //иначе рисуем эелемент в определенной позиции как обычно
         {
             LCD_Print_Number(10, 3, 2, editDT.day);
         }
