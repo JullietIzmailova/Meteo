@@ -102,6 +102,7 @@ void Screen_Meteo_Read_Buttons()
 void Screen_Meteo_Draw()
 {
 
+    if(DHT_Get_Status()){
     //Получаем Heat Index и в зависемости от его значения зажигаем зеленый, желтый или красный светодиоды
     //Подробнее смотрите config.h HEAT_INDEX_LEVEL_NNN  
     float current_heat_index = DHT_Get_Heat_Index();
@@ -148,7 +149,7 @@ void Screen_Meteo_Draw()
     }
     LCD_Print_Text(7, 0, heatStr);
 
-    //Показание сенсора освещенности, так же как Heat Index с удалением "мусора"
+        //Показание сенсора освещенности, так же как Heat Index с удалением "мусора"
     String lightStr = " L:" + String((int)LIGHT_GET_data());
     for (int i = 0; i < 7 - lightStr.length(); i++)
     {
@@ -162,6 +163,32 @@ void Screen_Meteo_Draw()
 
     //Выводим текущею дату и время
     LCD_Print_CenterLine3(" ");
+    }
+    else
+    {
+       String lightStr = " L:" + String((int)LIGHT_GET_data());
+       for (int i = 0; i < 7 - lightStr.length(); i++)
+       {
+        lightStr += " ";
+       }
+       
+       LCD_Print_CenterLine2(lightStr);
+       LCD_Print_CenterLine3(NO_DHT);
+    }
+
+    
+
+       
+
+
+
+    if(Clock_Get_Setup())
+    {
     LCD_Print_CenterLine4(Clock_Get_Date() + " " + Clock_Get_Time());
+    }
+    else
+    {
+        LCD_Print_CenterLine4(NO_CLOCK);
+    }
 
 }

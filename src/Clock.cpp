@@ -80,6 +80,12 @@ bool Clock_Setup()
     }
 }
 
+bool Clock_Get_Setup()
+{
+    return Setup_Result;
+}
+
+
 RTCDateTime Get_DateTime()
 {
     return clock->getDateTime();
@@ -117,7 +123,7 @@ String Clock_Get_Date()
     }
     else
     {
-        return "No clock";
+        return NO_CLOCK;
     }
 }
 
@@ -172,7 +178,7 @@ String Clock_Get_Time()
     }
     else
     {
-        return "No alarm";
+        return NO_CLOCK;
     }
 }
 
@@ -213,7 +219,7 @@ String Clock_Get_Alarm1()
     }
     else
     {
-        return "No alarm";
+        return NO_CLOCK;
     }
 }
 

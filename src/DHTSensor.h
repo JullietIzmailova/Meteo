@@ -2,6 +2,7 @@
 
 //true если сенсор доступен
 //false если сенсор не доступен
+#define NO_DHT "DHT error [0x15]"
 bool DHT_Setup();
 
 //true если сенсор доступен

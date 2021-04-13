@@ -196,22 +196,40 @@ void Screen_Alarm_Read_Buttons()
 
 void Screen_Alarm_Draw()
 {
+    
     if (App_Mode != MODE_SET_ALARM)
     {
+        
         LCD_Print_CenterLine1("Alarm at:");
-        LCDBigNumber_Print_Height2_Left(1, Clock_Get_Alarm1());
-        if (Clock_Get_Alarm1_Status())
-        {
+        
+       //Log("Show alarm");
+         
+        if(Clock_Get_Setup())
+        {         
+          LCDBigNumber_Print_Height2_Left(1, Clock_Get_Alarm1());
+          if (Clock_Get_Alarm1_Status())
+          {
             LCD_Print_CenterLine4("[on]");
+          }
+          else
+          {
+            LCD_Print_CenterLine4("[off]");
+          }
         }
         else
         {
-            LCD_Print_CenterLine4("[off]");
+             LCD_Print_CenterLine3(NO_CLOCK);
         }
     }
     else
     {
+      
         LCD_Print_Text(0, 0, "Set alarm:");
+        
+        //Log("Set alarm");
+        
+        if(Clock_Get_Setup())
+        {
         //Houre -----------------------------------
         if ((currentEdit == ALARM_HOURE) && (blink))
         {
@@ -258,5 +276,11 @@ void Screen_Alarm_Draw()
             }
         }
         blink = !blink;
+        }
+        else
+        {
+             LCD_Print_CenterLine3(NO_CLOCK);
+        }
     }
+  
 }
