@@ -53,8 +53,11 @@ OWLOS распространяется в надежде, что она буде
 
 #include "ScreenAlarm.h"
 
+//NOTE:
+//Этот модуль по своей организации похож на модуль ScreenClock - что бы ознакомится с его работой, раберите модуль ScreenClock
+//---
+
 extern int App_Mode;
-extern int App_Saved_Mode;
 
 #define ALARM_HOURE 0
 #define ALARM_MINUTE 1
