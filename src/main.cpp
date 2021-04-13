@@ -66,7 +66,7 @@ int Loop_Count = MAIN_LOOP_COUNT_LIMIT;
 //Текущий режим LCD экрана, влияет на вывод данных 
 int App_Mode = MODE_METEO;
 //Предидущий режим LCD экрана, дает возможность оценить - изменил ли пользователь режим экрана
-int App_Saved_Mode = MODE_METEO;
+int App_Saved_Mode = MODE_NULL;
 //Текущий элемент настройки (который пользователь может изменять)
 int currentEdit = 0;
 //Используется, для подстветки текущего элемента настройки
@@ -183,7 +183,7 @@ void loop()
   //Сохраняем значение этой переменной и анализируем нажимал ли пользователь кнопки #2 и #3
   //Нажатие этих кнопок в режимах просмотра данных - приведет к переключению экрана в следующий режим.
   //Переключение режимов экрана закальцована ->Meteo_Mode->Clock_Mode->Alarm_Mode->Meteo_Mode->
-  App_Saved_Mode = App_Mode;
+  //App_Saved_Mode = App_Mode;
   //Если не один из режимов настройки
   if ((App_Mode != MODE_SET_METEO) && (App_Mode != MODE_SET_CLOCK) && (App_Mode != MODE_SET_ALARM))
   {
@@ -228,6 +228,7 @@ void loop()
       Screen_Alarm_Init();
       break;
     }
+    App_Saved_Mode = App_Mode;
   }
 
   //В зависемости от текущего режима экрана - вызываем соответствующие процедуры

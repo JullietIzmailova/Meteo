@@ -53,20 +53,35 @@ OWLOS распространяется в надежде, что она буде
 
 #include "ScreenMeteo.h"
 
+#define AbsoluteZero -273
+int temperature_Save;
+int humidity_Save;
+int light_Save;
+int heat_index_Save;
+String date_Save;
+String time_Save;
+
 //Вызывается когда экран переключен в режимы MODE_METEO или MODE_SET_METEO
 void Screen_Meteo_Init()
 {
+    temperature_Save = AbsoluteZero + -1;
+    humidity_Save = 101; //%
+    light_Save = -1;
+    heat_index_Save = -1;
+    date_Save = "";
+    time_Save = "";
+
     LCD_Clear();
     Screen_Meteo_Draw();
 }
 
 //Для режимов экрана: MODE_METEO и MODE_SET_METEO
-//Главная процедура loop() вызывает эту процедуру каждый раз когда этот экран активен. 
-//Таким образом кнопки нажатые пользователем для этого экрана будуту обработаны этой 
-//процедурой. Подобные процедуры для других режимов экрана - вызваны не будут. 
+//Главная процедура loop() вызывает эту процедуру каждый раз когда этот экран активен.
+//Таким образом кнопки нажатые пользователем для этого экрана будуту обработаны этой
+//процедурой. Подобные процедуры для других режимов экрана - вызваны не будут.
 void Screen_Meteo_Read_Buttons()
 {
-    //FFR: Meteo modes
+    //FFR TODO: Meteo modes
     /*
     if (Get_Button1_LongPress() == true)
     {
@@ -97,98 +112,113 @@ void Screen_Meteo_Read_Buttons()
 }
 
 //Для режимов экрана: MODE_METEO и MODE_SET_METEO
-//Главная процедура loop() вызывает эту процедуру через определенный интервал и каждый раз когда этот 
-//экран активен. Все данные относящиеся к данному режиму экрана должны быть выведены этой процедурой. 
+//Главная процедура loop() вызывает эту процедуру через определенный интервал и каждый раз когда этот
+//экран активен. Все данные относящиеся к данному режиму экрана должны быть выведены этой процедурой.
 void Screen_Meteo_Draw()
 {
 
-    if(DHT_Get_Status()){
-    //Получаем Heat Index и в зависемости от его значения зажигаем зеленый, желтый или красный светодиоды
-    //Подробнее смотрите config.h HEAT_INDEX_LEVEL_NNN  
-    float current_heat_index = DHT_Get_Heat_Index();
-
-    if (current_heat_index > HEAT_INDEX_LEVEL_LOW)
+    int current_Light = (int)LIGHT_GET_data();
+    if (current_Light != light_Save)
     {
-        if (current_heat_index > HEAT_INDEX_LEVEL_HIGH)
-        {
-            LED_Only_Red_Set_Light();
-        }
-        else
-        {
-            LED_Only_Yellow_Set_Light();
-        }
-    }
-    else
-    {
-        LED_Only_Green_Set_Light();
-    }
-
-#ifdef LIGHT_SENSOR_ANALOG_PIN
-    //float lightValue = LIGHT_GET_data();
-    //работаем с Вольтами снятыми с аналогового пина
-    //LCD_Print_Line4("V => " + String(lightValue) + " Ph => " + String(LIGHT_GET_data()));
-#else
-    float lightValue = LIGHT_GET_data();
-    //работаем с Bool снятого с цифрового пина
-    //LCD_Print_Line4("A => " + String(lightValue) + " Ph => " + String(LIGHT_GET_data()));
-#endif
-
-    //Выводим текущее значение температуры полученное от DHT сенсора
-    //Используем (int) что бы убрать float часть, она не нужна пользователю (пример 25.44 переводим в 25)
-    LCDBigNumber_Print_Height2_Left(0, String((int)DHT_Get_Temperature()));
-    LCD_Print_Text(6, 0, String(char(223)));
-    LCD_Print_Text(6, 1, "C");
-
-    //Выводим значение Heat Index на экран (оно так же дублируется светодиодами)
-    //На экране нам необходимо "забить" пробелами оставшиеся символы, что бы избежать "мусора" на экране
-    //от предидущих прорисовок
-    String heatStr = " H:" + String((int)DHT_Get_Heat_Index());
-    for (int i = 0; i < 7 - heatStr.length(); i++)
-    {
-        heatStr += " ";
-    }
-    LCD_Print_Text(7, 0, heatStr);
-
         //Показание сенсора освещенности, так же как Heat Index с удалением "мусора"
-    String lightStr = " L:" + String((int)LIGHT_GET_data());
-    for (int i = 0; i < 7 - lightStr.length(); i++)
-    {
-        lightStr += " ";
+        String lightStr = " L:" + String((int)LIGHT_GET_data());
+        unsigned int length = 6 - lightStr.length();
+        for (unsigned int i = 0; i < length; i++)
+        {
+            lightStr += " ";
+        }
+        LCD_Print_Text(7, 1, lightStr);
+        light_Save = current_Light;
     }
-    LCD_Print_Text(7, 1, lightStr);
 
-    //Выводим значение влажности
-    LCDBigNumber_Print_Height2_Offset(0, 20 - 7, String((int)DHT_Get_Humidity()));
-    LCD_Print_Text(19, 1, "%");
+    if (DHT_Get_Status())
+    {
+        unsigned int length;
+        //Получаем Heat Index и в зависемости от его значения зажигаем зеленый, желтый или красный светодиоды
+        //Подробнее смотрите config.h HEAT_INDEX_LEVEL_NNN
+        int current_heat_index = (int)DHT_Get_Heat_Index();
 
-    //Выводим текущею дату и время
-    LCD_Print_CenterLine3(" ");
+        if (current_heat_index != heat_index_Save)
+        {
+
+            if (current_heat_index > HEAT_INDEX_LEVEL_LOW)
+            {
+                if (current_heat_index > HEAT_INDEX_LEVEL_HIGH)
+                {
+                    LED_Only_Red_Set_Light();
+                }
+                else
+                {
+                    LED_Only_Yellow_Set_Light();
+                }
+            }
+            else
+            {
+                LED_Only_Green_Set_Light();
+            }
+        }
+
+        int current_Temperature = (int)DHT_Get_Temperature();
+        if (current_Temperature != temperature_Save)
+        {
+            //Выводим текущее значение температуры полученное от DHT сенсора
+            //Используем (int) что бы убрать float часть, она не нужна пользователю (пример 25.44 переводим в 25)
+            LCDBigNumber_Print_Height2_Left(0, String(current_Temperature));
+            LCD_Print_Text(6, 0, String(char(223)));
+            LCD_Print_Text(6, 1, "C");
+            temperature_Save = current_Temperature;
+        }
+
+        if (current_heat_index != heat_index_Save)
+        {
+            //Выводим значение Heat Index на экран (оно так же дублируется светодиодами)
+            //На экране нам необходимо "забить" пробелами оставшиеся символы, что бы избежать "мусора" на экране
+            //от предидущих прорисовок
+            String heatStr = " H:" + String(current_heat_index);
+            length = 6 - heatStr.length();
+            for (unsigned int i = 0; i < length; i++)
+            {
+                heatStr += " ";
+            }
+            LCD_Print_Text(7, 0, heatStr);
+            heat_index_Save = current_heat_index;
+        }
+
+        int current_Humidity = (int)DHT_Get_Humidity();
+        if (current_Humidity != humidity_Save)
+        {
+            //Выводим значение влажности
+            LCDBigNumber_Print_Height2_Offset(0, 20 - 7, String(current_Humidity));
+            LCD_Print_Text(19, 1, "%");
+            LCD_Print_CenterLine3(" ");
+            humidity_Save = current_Humidity;
+        }
     }
     else
     {
-       String lightStr = " L:" + String((int)LIGHT_GET_data());
-       for (int i = 0; i < 7 - lightStr.length(); i++)
-       {
-        lightStr += " ";
-       }
-       
-       LCD_Print_CenterLine2(lightStr);
-       LCD_Print_CenterLine3(NO_DHT);
+        LCD_Print_CenterLine3(NO_DHT);
     }
 
-    
 
-       
-
-
-
-    if(Clock_Get_Setup())
+    if (Clock_Get_Setup())
     {
-    LCD_Print_CenterLine4(Clock_Get_Date() + " " + Clock_Get_Time());
+        //Выводим текущею дату и время
+        String current_Date = Clock_Get_Date();
+        if (!current_Date.equals(date_Save))
+        {
+            LCD_Print_Text(0, 3, current_Date);
+            date_Save = current_Date;
+        }
+
+        String current_Time = Clock_Get_Time();
+        if (!current_Time.equals(time_Save))
+        {
+            LCD_Print_Text(20 - current_Time.length(), 3, current_Time);
+            time_Save = current_Time;
+        }
     }
     else
     {
         LCD_Print_CenterLine4(NO_CLOCK);
     }
-
 }
