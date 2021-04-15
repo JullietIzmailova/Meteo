@@ -52,6 +52,7 @@ OWLOS распространяется в надежде, что она буде
 #include "Buttons.h"
 
 #include "ScreenMeteo.h"
+#include "SetupSignals.h"
 
 #define AbsoluteZero -273
 int temperature_Save;
@@ -117,20 +118,7 @@ void Screen_Meteo_Read_Buttons()
 void Screen_Meteo_Draw()
 {
 
-    int current_Light = (int)LIGHT_GET_data();
-    if (current_Light != light_Save)
-    {
-        //Показание сенсора освещенности, так же как Heat Index с удалением "мусора"
-        String lightStr = " L:" + String((int)LIGHT_GET_data());
-        unsigned int length = 6 - lightStr.length();
-        for (unsigned int i = 0; i < length; i++)
-        {
-            lightStr += " ";
-        }
-        LCD_Print_Text(7, 1, lightStr);
-        light_Save = current_Light;
-    }
-
+    
     if (DHT_Get_Status())
     {
         unsigned int length;
@@ -195,10 +183,48 @@ void Screen_Meteo_Draw()
         }
     }
     else
-    {
-        LCD_Print_CenterLine3(NO_DHT);
+    {      
+      
+            //Если датчик темпетаруты не работает 
+            
+            //1. Выводим значение влажности = 99
+            LCDBigNumber_Print_Height2_Offset(0, 20 - 7, String(99));
+            LCD_Print_Text(19, 1, "%");
+            humidity_Save = 0;
+            
+            //2.Выводим значение Heat Index на экран
+            String heatStr = " H:" + String(00);
+            unsigned int currentLength = 6 - heatStr.length();
+            for (unsigned int i = 0; i < currentLength; i++)
+            {
+                heatStr += " ";
+            }
+            LCD_Print_Text(7, 0, heatStr);
+            heat_index_Save = 0;
+
+             //3. Выводим значение температуры = 99
+            LCDBigNumber_Print_Height2_Left(0, String(99));
+            LCD_Print_Text(6, 0, String(char(223)));
+            LCD_Print_Text(6, 1, "C");
+            temperature_Save = 0;
+
+            LCD_Print_CenterLine3(NO_DHT);
+            Setup_Signals_Blinking_Light(3, "yellow");
     }
 
+    int current_Light = (int)LIGHT_GET_data();
+    if (current_Light != light_Save)
+    {
+        //Показание сенсора освещенности, так же как Heat Index с удалением "мусора"
+        String lightStr = " L:" + String((int)LIGHT_GET_data());
+        unsigned int length = 6 - lightStr.length();
+        for (unsigned int i = 0; i < length; i++)
+        {
+            lightStr += " ";
+        }
+        LCD_Print_Text(7, 1, lightStr);
+        light_Save = current_Light;
+    }
 
     if (Clock_Get_Setup())
     {
@@ -220,5 +246,8 @@ void Screen_Meteo_Draw()
     else
     {
         LCD_Print_CenterLine4(NO_CLOCK);
+        Setup_Signals_Blinking_Light(3, "red");
+        date_Save = "";
+        time_Save = "";
     }
 }

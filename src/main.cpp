@@ -55,6 +55,7 @@ OWLOS распространяется в надежде, что она буде
 #include "ScreenMeteo.h"
 #include "ScreenClock.h"
 #include "ScreenAlarm.h"
+#include "SetupSignals.h"
 
 //Счетчик количество loop() итераций которое будет пропущено перед очередным 
 //выводам данных на LCD экран. Инициализируется предельным значением MAIN_LOOP_COUNT_LIMIT, 
@@ -90,6 +91,9 @@ void setup()
   LCD_Print_CenterLine1("-= OWLOS Meteo =-"); //выводим приветствие
   LCD_Print_CenterLine3("Please wait...");
   delay(LOGO_DELAY); //задержка для экрана приветствия
+  
+  
+
 
 //если определен этот Define - инициализация устройств проводится с печатью отладочной информации на LCD и определенным
 //интервалом задержки после инициализации каждого подключеного устройства
@@ -111,8 +115,15 @@ void setup()
   LCD_Print_CenterLine2("Light setup...OK");
   delay(DEBUG_SETUP_DELAY);
 
-  DHT_Setup(); //инициализация сенсора температуры-влажности
+  if(DHT_Setup())
+  { //инициализация сенсора температуры-влажности
   LCD_Print_CenterLine2("DHT setup...OK");
+  }
+  else
+  {
+   LCD_Print_CenterLine2("DHT setup...Bad");
+   Setup_Signals_Long_And_Short(5, 5, true);
+  }
   delay(DEBUG_SETUP_DELAY);
 
   if (Clock_Setup()) //инициализация часов реального времени
@@ -122,8 +133,10 @@ void setup()
   else
   {
     LCD_Print_CenterLine2("Clock setup...Bad");
+    Setup_Signals_Long_And_Short(3, 3, true);
   }
   delay(DEBUG_SETUP_DELAY);
+
   LCD_Print_CenterLine2("");
   LCD_Print_CenterLine3("Setup complete");
   delay(DEBUG_SETUP_DELAY);
