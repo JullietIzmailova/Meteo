@@ -56,6 +56,11 @@ OWLOS распространяется в надежде, что она буде
 
 #define TOKENS_SIZE 10
 
+extern int GreenLedData;
+extern int YellowLedData;
+extern int RedLedData;
+
+
 String SerialInput;
 
 bool busy = false;
@@ -121,7 +126,7 @@ void UARTRecv(String command)
       if (token[0].equals("AT+ADP?"))
       {
         // UARTSendOK(token[0], LED_Get_Properties());
-        UARTSendOK(token[0], "properties for:RedLedActuator\nid=actuatordriver//r\npin0=" + String(LED_RED_PIN) + "//s\npintype0=DIGITAL_O,ANALOG_O//r\npin1=GND//s\npintype1=GND//r\navailable=1//bs\ntype=8//r\ndata=" + String(0) + "//is\n\0");
+        UARTSendOK(token[0], "PF:RLed\nid=rLed//r\nv=" + String(RedLedData) + "//is\nPF:GLed\nid=gLed//r\nv=" + String(GreenLedData) + "//is\PF:yLed\nid=yLed//r\nv=" + String(YellowLedData) + "//is\n\0");
       }
     }
     else

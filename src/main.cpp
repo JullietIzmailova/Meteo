@@ -57,14 +57,14 @@ OWLOS распространяется в надежде, что она буде
 #include "ScreenAlarm.h"
 #include "SetupSignals.h"
 
-//Счетчик количество loop() итераций которое будет пропущено перед очередным 
-//выводам данных на LCD экран. Инициализируется предельным значением MAIN_LOOP_COUNT_LIMIT, 
-//таким образом после setup() - первая этерация loop() выведет данные на экран и перейдет в 
-//режим ожидания (сбросит счетчик Loop_Count в ноль), пока счетик Loop_Count сново не 
-//достигнет значения MAIN_LOOP_COUNT_LIMIT. Каждый loop() увеличивает  Loop_Count на единицу. 
+//Счетчик количество loop() итераций которое будет пропущено перед очередным
+//выводам данных на LCD экран. Инициализируется предельным значением MAIN_LOOP_COUNT_LIMIT,
+//таким образом после setup() - первая этерация loop() выведет данные на экран и перейдет в
+//режим ожидания (сбросит счетчик Loop_Count в ноль), пока счетик Loop_Count сново не
+//достигнет значения MAIN_LOOP_COUNT_LIMIT. Каждый loop() увеличивает  Loop_Count на единицу.
 int Loop_Count = MAIN_LOOP_COUNT_LIMIT;
 
-//Текущий режим LCD экрана, влияет на вывод данных 
+//Текущий режим LCD экрана, влияет на вывод данных
 int App_Mode = MODE_METEO;
 //Предидущий режим LCD экрана, дает возможность оценить - изменил ли пользователь режим экрана
 int App_Saved_Mode = MODE_NULL;
@@ -91,7 +91,7 @@ void setup()
   LCD_Print_CenterLine1("-= OWLOS Meteo =-"); //выводим приветствие
   LCD_Print_CenterLine3("Please wait...");
   delay(LOGO_DELAY); //задержка для экрана приветствия
-    
+
 //если определен этот Define - инициализация устройств проводится с печатью отладочной информации на LCD и определенным
 //интервалом задержки после инициализации каждого подключеного устройства
 #ifdef DEBUG_SETUP
@@ -112,14 +112,14 @@ void setup()
   LCD_Print_CenterLine2("Light setup...OK");
   delay(DEBUG_SETUP_DELAY);
 
-  if(DHT_Setup())
+  if (DHT_Setup())
   { //инициализация сенсора температуры-влажности
-  LCD_Print_CenterLine2("DHT setup...OK");
+    LCD_Print_CenterLine2("DHT setup...OK");
   }
   else
   {
-   LCD_Print_CenterLine2("DHT setup...Bad");
-   Setup_Signals_Long_And_Short(5, 5, true);
+    LCD_Print_CenterLine2("DHT setup...Bad");
+    Setup_Signals_Long_And_Short(5, 5, true);
   }
   delay(DEBUG_SETUP_DELAY);
 
