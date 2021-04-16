@@ -40,6 +40,7 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 #include <Arduino.h>
+#include "config.h"
 #include "DHTSensor.h"
 #include "LEDActuator.h"
 #include "LIGHTActuator.h"
@@ -48,14 +49,88 @@ OWLOS распространяется в надежде, что она буде
 
 #include "Log.h"
 
-void UARTLoop()
-{
-  if (Serial.available())
-  {
-    String s = Serial.readString();
-    String origin = s;
-    s.toUpperCase();
+#define OK_ANSWER "OK: "
+#define PUBLISH_ANSWER "PUB: "
+#define CANCEL_ANSWER "CANCEL: "
+#define ERROR_ANSWER "ERROR: "
 
+#define TOKENS_SIZE 10
+
+String SerialInput;
+
+bool busy = false;
+
+void UARTSend(String topic, String payload)
+{
+  Serial.print(PUBLISH_ANSWER + topic + " " + payload + "\n\n");
+}
+
+void UARTSendError(String topic, String payload)
+{
+  Serial.print(ERROR_ANSWER + topic + "\n");
+  Serial.print(payload + "\n\n");
+}
+
+void UARTSendOK(String topic, const String & payload)
+{
+  
+  Serial.print(OK_ANSWER + topic + " " + String(payload.length()) + "\n");
+  Serial.print(payload);
+/*
+  String payloadStr = String(payload.c_str());
+  Serial.print(String(payloadStr.length()) + "\n");
+  while (payloadStr.indexOf("\n") != -1)
+  {
+    String sendStr = payloadStr.substring(0, payloadStr.indexOf("\n") + 1);
+    Serial.print(sendStr);
+    delay(10);
+    payloadStr.replace(sendStr, "");
+  }
+  */
+  Serial.print("\n\n");
+
+}
+
+void UARTRecv(String command)
+{
+  if (command.length() > 0)
+  {
+    command.replace("\n", "");
+    //--- Tokenize command
+    String token[TOKENS_SIZE];
+    int count = 0;
+    while (command.indexOf(" ") != -1)
+    {
+      if (count > TOKENS_SIZE - 2)
+      {
+        break;
+      }
+      token[count] = command.substring(0, command.indexOf(" "));
+      command.replace(token[count] + " ", "");
+      count++;
+    }
+
+    command.replace(" ", "");
+    token[count] = command;
+    count++;
+    //--- ENDOF Tokenize command
+
+    if ((count > 0) && (token[0].length() > 0))
+    {
+      token[0].toUpperCase();
+      if (token[0].equals("AT+ADP?"))
+      {
+        // UARTSendOK(token[0], LED_Get_Properties());
+        UARTSendOK(token[0], "properties for:RedLedActuator\nid=actuatordriver//r\npin0=" + String(LED_RED_PIN) + "//s\npintype0=DIGITAL_O,ANALOG_O//r\npin1=GND//s\npintype1=GND//r\navailable=1//bs\ntype=8//r\ndata=" + String(0) + "//is\n\0");
+      }
+    }
+    else
+    {
+      UARTSendError(token[0], "empty command");
+    }
+  }
+
+  /*
     if (s.equals("AT+B\n"))
     {
       BUZZER_Set_sound(true);
@@ -78,28 +153,45 @@ void UARTLoop()
     {
       Serial.println("OK AT+L? " + String(LIGHT_GET_data()));
     }
-    else if (s.indexOf("AT+SDT") == 0)
+    else if (s.equals("AT+ADP?"))
     {
-      //AT+SDT Mar 03 2021;21:55:40
-      //AT+SDT Mar 03 2021;21:32:40
-      //
-      //AT+SDT Dec 03 2024;23:59:40
-      //           ^2 char если меньше добавляется пробел или ноль
-      Log(__DATE__);
-      Log(__TIME__);
-      Log(origin);
-      String date = origin.substring(s.indexOf(" ") + 1); //Mar 3 2021;21:32:40
-      Log("|" + date + "|");
-      String time = date.substring(date.indexOf(";") + 1, date.length()); //21:32:40
-      Log("|" + time + "|");
-      date = date.substring(0, date.indexOf(";")); //Mar 3 2021
-      Log("|" + date + "|");
-
-      Clock_Set_DateTime(date, time);
+      
+      Serial.print(OK_ANSWER + String("AT+ADP?\n"));    
+      Serial.print(LED_Get_Properties() + "\n\n");              
     }
     else
     {
       Serial.println("Unknown Command");
+    }  
+    */
+}
+
+void UARTLoop()
+{
+  if (busy)
+  {
+    SerialInput = "";
+    LED_Red_Set_Light(true);
+    delay(200);
+    LED_Red_Set_Light(false);
+  }
+  else if (Serial.available() > 0)
+  {
+    String currentStr = Serial.readString();
+    SerialInput += currentStr;
+    if (SerialInput.indexOf('\r') != -1)
+    {
+
+      busy = true;
+      Serial.flush();
+      SerialInput.replace("\r", "");
+      SerialInput.replace("\n", "");
+      UARTRecv(SerialInput);
+      SerialInput = "";
+      busy = false;
+
+      Serial.flush();
+      Serial.clearWriteError();
     }
   }
 }
