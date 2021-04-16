@@ -3,6 +3,11 @@
 //true если сенсор доступен
 //false если сенсор не доступен
 #define NO_DHT "DHT error [0x15]"
+#define NO_DHT_LED_Color "yellow"
+#define NO_DHT_LED_Blink 3
+#define NO_DHT_Long_Signals 3
+#define NO_DHT_Short_Signals 3
+
 bool DHT_Setup();
 
 //true если сенсор доступен

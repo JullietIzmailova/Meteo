@@ -2,6 +2,11 @@
 #include "src/libraries/DS3231/DS3231.h"
 
 #define NO_CLOCK "Clock error [0x15]"
+#define NO_CLOCK_LED_Color "red"
+#define NO_CLOCK_LED_Blink 5
+#define NO_CLOCK_Long_Signals 5
+#define NO_CLOCK_Short_Signals 5
+
 bool Clock_Setup();
 bool Clock_Get_Setup();
 RTCDateTime Get_DateTime();

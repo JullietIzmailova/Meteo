@@ -118,8 +118,8 @@ void setup()
   }
   else
   {
-    LCD_Print_CenterLine2("DHT setup...Bad");
-    Setup_Signals_Long_And_Short(5, 5, true);
+   LCD_Print_CenterLine2("DHT setup...Bad");
+   Setup_Signals_Long_And_Short(NO_DHT_Long_Signals, NO_DHT_Short_Signals, true);
   }
   delay(DEBUG_SETUP_DELAY);
 
@@ -130,7 +130,7 @@ void setup()
   else
   {
     LCD_Print_CenterLine2("Clock setup...Bad");
-    Setup_Signals_Long_And_Short(3, 3, true);
+    Setup_Signals_Long_And_Short(NO_CLOCK_Long_Signals, NO_CLOCK_Short_Signals, true);
   }
   delay(DEBUG_SETUP_DELAY);
 
