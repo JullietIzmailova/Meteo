@@ -188,7 +188,7 @@ void Screen_Meteo_Draw()
             //Если датчик темпетаруты не работает 
             
             //1. Выводим значение влажности = 99
-            LCDBigNumber_Print_Height2_Offset(0, 20 - 7, String("00"));
+            LCDBigNumber_Print_Height2_Offset(0, 20 - 7, String("......"));
             LCD_Print_Text(19, 1, "%");
             humidity_Save = 0;
             
@@ -203,7 +203,7 @@ void Screen_Meteo_Draw()
             heat_index_Save = 0;
 
              //3. Выводим значение температуры = 99
-            LCDBigNumber_Print_Height2_Left(0, String("00"));
+            LCDBigNumber_Print_Height2_Left(0, String("......"));
             LCD_Print_Text(6, 0, String(char(223)));
             LCD_Print_Text(6, 1, "C");
             temperature_Save = 0;

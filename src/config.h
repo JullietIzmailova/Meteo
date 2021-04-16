@@ -43,7 +43,7 @@ OWLOS распространяется в надежде, что она буде
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define SERIAL_BAUD 9600 //скорость UART (Serial)
+#define SERIAL_BAUD 115200 //скорость UART (Serial)
 #define SETUP_DELAY 100  //задержка процедуры Setup() после инициализации UART (Serial)
 #define LOGO_DELAY 1500  //интервал задержки Logo Screen при загрузки
 
