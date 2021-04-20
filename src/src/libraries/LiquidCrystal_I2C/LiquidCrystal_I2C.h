@@ -55,7 +55,7 @@
 class LiquidCrystal_I2C : public Print {
 public:
   LiquidCrystal_I2C(uint8_t lcd_Addr,uint8_t lcd_cols,uint8_t lcd_rows);
-  void begin(uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS );
+  uint8_t begin(uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS );
   void clear();
   void home();
   void noDisplay();
@@ -87,7 +87,7 @@ public:
   virtual void write(uint8_t);
 #endif
   void command(uint8_t);
-  void init();
+  uint8_t init();
   void oled_init();
 
 ////compatibility API function aliases
@@ -112,10 +112,10 @@ void draw_vertical_graph(uint8_t row, uint8_t column, uint8_t len,  uint8_t pixe
 	 
 
 private:
-  void init_priv();
+  uint8_t init_priv();
   void send(uint8_t, uint8_t);
   void write4bits(uint8_t);
-  void expanderWrite(uint8_t);
+  uint8_t expanderWrite(uint8_t);
   void pulseEnable(uint8_t);
   uint8_t _Addr;
   uint8_t _displayfunction;

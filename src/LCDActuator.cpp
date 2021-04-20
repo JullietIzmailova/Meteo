@@ -79,11 +79,18 @@ LiquidCrystal_I2C *lcd;
 //LiquidCrystal_I2C *lcd = nullptr;
 
 bool LCD_Setup()
-{
+{    
     lcd = new LiquidCrystal_I2C(LCD_PORT, LCD_COLS, LCD_ROWS); //port = 0x27 for PCF8574T and PCF8574AT for 0x3F, 16 cols, 2 raws
-    lcd->init();
-    Log("LCD setup complete");
-    return true;
+    if (lcd->init() == 0)
+    {      
+      Log("LCD setup complete");
+      return true;    
+    }
+    else 
+    {      
+      Log("BAD LCD setup");
+      return false;    
+    }        
 }
 
 LiquidCrystal_I2C *LCD_Get_LCDPointer()
