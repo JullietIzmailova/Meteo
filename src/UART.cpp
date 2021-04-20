@@ -59,7 +59,16 @@ OWLOS распространяется в надежде, что она буде
 extern int GreenLedData;
 extern int YellowLedData;
 extern int RedLedData;
+extern int BuzzerData;
 
+extern String Date;
+extern String Time;
+extern String Alarm;
+extern bool AlarmStatus;
+
+extern float Temperature;
+extern float Humidity;
+extern float HeatIndex;
 
 String SerialInput;
 
@@ -76,24 +85,33 @@ void UARTSendError(String topic, String payload)
   Serial.print(payload + "\n\n");
 }
 
-void UARTSendOK(String topic, const String & payload)
+void UARTSendOK(String topic, const String &payload)
 {
-  
   Serial.print(OK_ANSWER + topic + " " + String(payload.length()) + "\n");
   Serial.print(payload);
-/*
-  String payloadStr = String(payload.c_str());
-  Serial.print(String(payloadStr.length()) + "\n");
-  while (payloadStr.indexOf("\n") != -1)
-  {
-    String sendStr = payloadStr.substring(0, payloadStr.indexOf("\n") + 1);
-    Serial.print(sendStr);
-    delay(10);
-    payloadStr.replace(sendStr, "");
-  }
-  */
   Serial.print("\n\n");
+}
 
+void UARTSendADP(String topic)
+{
+  //const String payload = "PF:RLed\nid=RLed//r\nd=" + String(RedLedData) + "//isPF:GLed\nid=GLed//r\nd="  + String(GreenLedData) + "//is\nPF:YLed\nid=YLed//r\nd=" + String(YellowLedData) + "//is\nPF:Beep\nid=Beep//r\nd=" + String(BuzzerData) + "//is\nPF:Clock\nid=Clock//r\nd=" + Clock_Get_Date() + "//s\nt=" + Clock_Get_Time() + "//s\na=" + Clock_Get_Alarm1() + "//s\nas=" + Clock_Get_Alarm1_Status()  + "//sb\n\0";
+  //"PF:DHT\nid=DHT//r\nt=" + DHT_Get_Temperature() + "//rs\nh=" + DHT_Get_Humidity() + "//rs\nht=" + DHT_Get_Heat_Index() + "//rs\n\0";
+
+  Serial.print(OK_ANSWER + topic + "\n");
+
+  Serial.print("PF:RL\nd=" + String(RedLedData) + "//i\nPF:GL\nd=" + String(GreenLedData) + "//i\n");      
+  delay(20);
+
+  Serial.print("PF:YL\nd=" + String(YellowLedData) + "//i\nPF:BZ\nd=" + String(BuzzerData) + "//i\n");    
+  delay(20);
+
+  Serial.print("PF:CL\nd=" + Date + "//\nt=" + Time + "//\na=" + Alarm + "//\nas=" + AlarmStatus + "//b\n");    
+  delay(20);
+
+  Serial.print("PF:DHT\nt=" + String(Temperature) + "//r\nh=" + String(Humidity) + "//r\ni=" + String(HeatIndex) + "//r\n\0");      
+  delay(20);
+
+  Serial.print("\n\n");
 }
 
 void UARTRecv(String command)
@@ -125,50 +143,158 @@ void UARTRecv(String command)
       token[0].toUpperCase();
       if (token[0].equals("AT+ADP?"))
       {
-        // UARTSendOK(token[0], LED_Get_Properties());
-        UARTSendOK(token[0], "PF:RLed\nid=rLed//r\nv=" + String(RedLedData) + "//is\nPF:GLed\nid=gLed//r\nv=" + String(GreenLedData) + "//is\PF:yLed\nid=yLed//r\nv=" + String(YellowLedData) + "//is\n\0");
+        UARTSendADP(token[0]);
+      }    
+    else 
+    //GET driver propery
+    if (token[0].equals("AT+DP?"))
+    {
+      if (count > 2)
+      {
+        token[1].toLowerCase();
+        token[2].toLowerCase();
+        String result = "";
+        if ((token[1].equals("rl")) && (token[2].equals("d")))
+        {
+          result = String(RedLedData);
+        }
+        else if ((token[1].equals("yl")) && (token[2].equals("d")))
+        {
+          result = String(YellowLedData);
+        }
+        else if ((token[1].equals("gl")) && (token[2].equals("d")))
+        {
+          result = String(GreenLedData);
+        }
+        else if ((token[1].equals("bz")) && (token[2].equals("d")))
+        {
+          result = String(BuzzerData);
+        }
+        else if (token[1].equals("cl"))
+        {
+          if (token[2].equals("d"))
+          {
+            result = Clock_Get_Date();
+          }
+          else if (token[2].equals("t"))
+          {
+            result = Clock_Get_Time();
+          }
+          else if (token[2].equals("a"))
+          {
+            result = Clock_Get_Alarm1();
+          }
+          else if (token[2].equals("as"))
+          {
+            result = String(Clock_Get_Alarm1_Status());
+          }
+        }
+        else if (token[1].equals("dht"))
+        {
+          if (token[2].equals("t"))
+          {
+            result = String(DHT_Get_Temperature());
+          }
+          else if (token[2].equals("h"))
+          {
+            result = String(DHT_Get_Humidity());
+          }
+          else if (token[2].equals("i"))
+          {
+            result = String(DHT_Get_Heat_Index());
+          }
+        }
+        if (result.length() > 0)
+        {
+          UARTSendOK(token[0], result);
+        }
+        else
+        {
+          UARTSendError("Unknow driver or property", token[1] + " " + token[2]);
+        }
+      }
+      else
+      {
+        UARTSendError("Bad parameters", "");
+      }
+    }
+    else 
+    //SET driver propery
+    if (token[0].equals("AT+DP"))
+    {
+      if (count > 3)
+      {
+        
+        token[1].toLowerCase();
+        token[2].toLowerCase();
+        Serial.print(token[1] + " " + token[2]);
+        String result = "";
+        if ((token[1].equals("rl")) && (token[2].equals("d")))
+        {
+          LED_Red_Set_Light(atoi(token[3].c_str()));
+          result = "1"; //1 is success
+        }
+        else if ((token[1].equals("yl")) && (token[2].equals("d")))
+        {
+          LED_Yellow_Set_Light(atoi(token[3].c_str()));
+          result = "1";
+        }
+        else if ((token[1].equals("gl")) && (token[2].equals("d")))
+        {
+          LED_Green_Set_Light(atoi(token[3].c_str()));
+          result = "1";
+        }
+        else if ((token[1].equals("bz")) && (token[2].equals("d")))
+        {
+          BUZZER_Set_sound(atoi(token[3].c_str()));
+          result = "1";
+        }
+        else if (token[1].equals("cl"))
+        {
+          if (token[2].equals("d"))
+          {
+            result = "0";
+          }
+          else if (token[2].equals("t"))
+          {
+            result = "0";
+          }
+          else if (token[2].equals("a"))
+          {
+            result = "0";
+          }
+          else if (token[2].equals("as"))
+          {
+            Serial.print(atoi(token[3].c_str()));
+            Clock_Set_Alarm1_Status(atoi(token[3].c_str()));
+            result = "1";
+          }
+        }
+
+        if (result.length() > 0)
+        {
+          UARTSendOK(token[0], result);
+        }
+        else
+        {
+          UARTSendError("Unknow driver or property", token[1] + " " + token[2]);
+        }
+      }
+      else
+      {
+        UARTSendError("Bad parameters", "");
       }
     }
     else
     {
-      UARTSendError(token[0], "empty command");
+      UARTSendError("unknown command", "");
+    }
+    }
+    else 
+    {
+      UARTSendError("Bad command", "");
     }
   }
-
-  /*
-    if (s.equals("AT+B\n"))
-    {
-      BUZZER_Set_sound(true);
-      delay(2000);
-      BUZZER_Set_sound(false);
-    }
-    else if (s.equals("AT+T?\n"))
-    {
-      Serial.println("OK AT+T? " + String(DHT_Get_Temperature()));
-    }
-    else if (s.equals("AT+H?\n"))
-    {
-      Serial.println("OK AT+H? " + String(DHT_Get_Humidity()));
-    }
-    else if (s.equals("AT+I?\n"))
-    {
-      Serial.println("OK AT+I? " + String(DHT_Get_Heat_Index()));
-    }
-    else if (s.equals("AT+L?\n"))
-    {
-      Serial.println("OK AT+L? " + String(LIGHT_GET_data()));
-    }
-    else if (s.equals("AT+ADP?"))
-    {
-      
-      Serial.print(OK_ANSWER + String("AT+ADP?\n"));    
-      Serial.print(LED_Get_Properties() + "\n\n");              
-    }
-    else
-    {
-      Serial.println("Unknown Command");
-    }  
-    */
 }
 
 void UARTLoop()
@@ -188,15 +314,15 @@ void UARTLoop()
     {
 
       busy = true;
-      Serial.flush();
+      //Serial.flush();
       SerialInput.replace("\r", "");
       SerialInput.replace("\n", "");
       UARTRecv(SerialInput);
       SerialInput = "";
-      busy = false;
 
       Serial.flush();
       Serial.clearWriteError();
+      busy = false;
     }
   }
 }

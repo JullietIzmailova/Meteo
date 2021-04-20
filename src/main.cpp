@@ -57,6 +57,8 @@ OWLOS распространяется в надежде, что она буде
 #include "ScreenAlarm.h"
 #include "SetupSignals.h"
 
+#include <avr/wdt.h>
+
 //Счетчик количество loop() итераций которое будет пропущено перед очередным
 //выводам данных на LCD экран. Инициализируется предельным значением MAIN_LOOP_COUNT_LIMIT,
 //таким образом после setup() - первая этерация loop() выведет данные на экран и перейдет в
@@ -79,6 +81,8 @@ bool AnyKey = false;
 //Значения параметров настройки смотрите в файлы config.h
 void setup()
 {
+  wdt_disable();
+
   Serial.begin(SERIAL_BAUD); //Устанавливаем скорость UART (Serial)
   delay(SETUP_DELAY);        //Даем время соединеному устройству принять новую скорость UART (Serial) (смотрите: config.h)
   Log("Do setup...");

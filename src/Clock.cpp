@@ -53,18 +53,27 @@ bool buzzerOn = false;
 
 bool Setup_Result = false;
 
+extern volatile unsigned long timer0_overflow_count;
+long lastTimeQuery = 0;
+RTCDateTime LastDateTime;
+
+String Date = "";
+String Time = "";
+String Alarm = "";
+bool AlarmStatus = false;
+
 bool Clock_Setup()
 {
     clock = new DS3231();
     //CLOCK
     if (clock->begin())
-    {
-        //TODO: FFR: clock->begin check I2C
-        dt = clock->getDateTime();
-        if (dt.year != 0)
-        {
+    {        
+        LastDateTime = clock->getDateTime();
+        if (LastDateTime.year != 0)
+        {            
             Log("CLOCK setup complete");
             Setup_Result = true;
+            Clock_Get_Alarm1();
             return true;
         }
         else
@@ -88,7 +97,16 @@ bool Clock_Get_Setup()
 
 RTCDateTime Get_DateTime()
 {
-    return clock->getDateTime();
+    if (Setup_Result)
+    {
+
+    if (timer0_overflow_count - lastTimeQuery > 800)
+    {
+       lastTimeQuery = timer0_overflow_count;
+       LastDateTime = clock->getDateTime();
+    }
+    }
+    return LastDateTime;
 }
 
 void Clock_Set_DateTime(String DATE, String TIME)
@@ -106,20 +124,22 @@ String Clock_Get_Date()
 
     if (Setup_Result)
     {
-        dt = clock->getDateTime();
-        String days = String(dt.day);
+        Get_DateTime();
+        
+        String days = String(LastDateTime.day);
         if (days.length() < 2)
         {
             days = "0" + days;
         }
 
-        String month = String(dt.month);
+        String month = String(LastDateTime.month);
         if (month.length() < 2)
         {
             month = "0" + month;
         }
 
-        return days + "." + month + "." + String(dt.year);
+        Date = days + "." + month + "." + String(LastDateTime.year);
+        return Date;
     }
     else
     {
@@ -132,28 +152,30 @@ String Clock_Get_Time()
 {
     if (Setup_Result)
     {
-        dt = clock->getDateTime();
-        String hours = String(dt.hour);
+        Get_DateTime();
+        String hours = String(LastDateTime.hour);
         if (hours.length() < 2)
         {
             hours = "0" + hours;
         }
-        String minutes = String(dt.minute);
+        String minutes = String(LastDateTime.minute);
         if (minutes.length() < 2)
         {
             minutes = "0" + minutes;
         }
 
-        String seconds = String(dt.second);
+        String seconds = String(LastDateTime.second);
         if (seconds.length() < 2)
         {
             seconds = "0" + seconds;
         }
-        //check alarm
 
-        RTCAlarmTime alarmTime;
-        if (clock->isArmed1())
+        Time = hours + ":" + minutes + ":" + seconds;
+        //check alarm
+        AlarmStatus = clock->isArmed1();
+        if (AlarmStatus)
         {
+            RTCAlarmTime alarmTime;
             alarmTime = clock->getAlarm1();
             if ((dt.hour == alarmTime.hour) && (dt.minute == alarmTime.minute))
             {
@@ -174,7 +196,7 @@ String Clock_Get_Time()
             }
         }
 
-        return hours + ":" + minutes + ":" + seconds;
+        return Time;
     }
     else
     {
@@ -215,7 +237,8 @@ String Clock_Get_Alarm1()
             seconds = "0" + seconds;
         }
 
-        return hours + ":" + minutes + ":" + seconds;
+        Alarm = hours + ":" + minutes + ":" + seconds; 
+        return Alarm;
     }
     else
     {

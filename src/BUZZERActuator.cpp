@@ -45,6 +45,8 @@ OWLOS распространяется в надежде, что она буде
 #include "BUZZERActuator.h"
 #include <Arduino.h>
 
+int BuzzerData = 0;
+
 bool BUZZER_Setup()
 {
     pinMode(BUZZER_PIN, OUTPUT);
@@ -68,4 +70,5 @@ void BUZZER_Set_sound(bool on)
     {
         digitalWrite(BUZZER_PIN, LOW);
     }
+    BuzzerData = on;
 }
