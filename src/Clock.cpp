@@ -46,7 +46,6 @@ OWLOS распространяется в надежде, что она буде
 #include "BUZZERActuator.h"
 
 DS3231 *clock = nullptr;
-RTCDateTime dt;
 
 extern bool AnyKey;
 bool buzzerOn = false;
@@ -177,7 +176,7 @@ String Clock_Get_Time()
         {
             RTCAlarmTime alarmTime;
             alarmTime = clock->getAlarm1();
-            if ((dt.hour == alarmTime.hour) && (dt.minute == alarmTime.minute))
+            if ((LastDateTime.hour == alarmTime.hour) && (LastDateTime.minute == alarmTime.minute))
             {
                 if (!AnyKey)
                 {

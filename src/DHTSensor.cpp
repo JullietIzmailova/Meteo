@@ -46,9 +46,9 @@ OWLOS распространяется в надежде, что она буде
 
 DHT *dht = nullptr;
 
-float Temperature = -255;
+float Temperature = ABSOLUTE_ZERO;
 float Humidity = 101;
-float HeatIndex = 0;
+float HeatIndex = -1;
 
 //true если сенсор доступен
 //false если сенсор не доступен

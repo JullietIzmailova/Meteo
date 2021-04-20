@@ -48,6 +48,7 @@ OWLOS распространяется в надежде, что она буде
 #include "Clock.h"
 
 #include "Log.h"
+#include <avr/wdt.h>
 
 #define OK_ANSWER "OK: "
 #define PUBLISH_ANSWER "PUB: "
@@ -70,7 +71,8 @@ extern float Temperature;
 extern float Humidity;
 extern float HeatIndex;
 
-String SerialInput;
+String SerialInput = "\0";
+
 
 bool busy = false;
 
@@ -94,21 +96,18 @@ void UARTSendOK(String topic, const String &payload)
 
 void UARTSendADP(String topic)
 {
-  //const String payload = "PF:RLed\nid=RLed//r\nd=" + String(RedLedData) + "//isPF:GLed\nid=GLed//r\nd="  + String(GreenLedData) + "//is\nPF:YLed\nid=YLed//r\nd=" + String(YellowLedData) + "//is\nPF:Beep\nid=Beep//r\nd=" + String(BuzzerData) + "//is\nPF:Clock\nid=Clock//r\nd=" + Clock_Get_Date() + "//s\nt=" + Clock_Get_Time() + "//s\na=" + Clock_Get_Alarm1() + "//s\nas=" + Clock_Get_Alarm1_Status()  + "//sb\n\0";
-  //"PF:DHT\nid=DHT//r\nt=" + DHT_Get_Temperature() + "//rs\nh=" + DHT_Get_Humidity() + "//rs\nht=" + DHT_Get_Heat_Index() + "//rs\n\0";
-
   Serial.print(OK_ANSWER + topic + "\n");
 
-  Serial.print("PF:RL\nd=" + String(RedLedData) + "//i\nPF:GL\nd=" + String(GreenLedData) + "//i\n");      
+  Serial.print("PF:RL\nd=" + String(RedLedData) + "//i\nPF:GL\nd=" + String(GreenLedData) + "//i\n");
   delay(20);
 
-  Serial.print("PF:YL\nd=" + String(YellowLedData) + "//i\nPF:BZ\nd=" + String(BuzzerData) + "//i\n");    
+  Serial.print("PF:YL\nd=" + String(YellowLedData) + "//i\nPF:BZ\nd=" + String(BuzzerData) + "//i\n");
   delay(20);
 
-  Serial.print("PF:CL\nd=" + Date + "//\nt=" + Time + "//\na=" + Alarm + "//\nas=" + AlarmStatus + "//b\n");    
+  Serial.print("PF:CL\nd=" + Date + "//\nt=" + Time + "//\na=" + Alarm + "//\nas=" + AlarmStatus + "//b\n");
   delay(20);
 
-  Serial.print("PF:DHT\nt=" + String(Temperature) + "//r\nh=" + String(Humidity) + "//r\ni=" + String(HeatIndex) + "//r\n\0");      
+  Serial.print("PF:DHT\nt=" + String(Temperature) + "//r\nh=" + String(Humidity) + "//r\ni=" + String(HeatIndex) + "//r\n");
   delay(20);
 
   Serial.print("\n\n");
@@ -144,153 +143,153 @@ void UARTRecv(String command)
       if (token[0].equals("AT+ADP?"))
       {
         UARTSendADP(token[0]);
-      }    
-    else 
-    //GET driver propery
-    if (token[0].equals("AT+DP?"))
-    {
-      if (count > 2)
+      }
+      else
+          //GET driver propery
+          if (token[0].equals("AT+DP?"))
       {
-        token[1].toLowerCase();
-        token[2].toLowerCase();
-        String result = "";
-        if ((token[1].equals("rl")) && (token[2].equals("d")))
+        if (count > 2)
         {
-          result = String(RedLedData);
-        }
-        else if ((token[1].equals("yl")) && (token[2].equals("d")))
-        {
-          result = String(YellowLedData);
-        }
-        else if ((token[1].equals("gl")) && (token[2].equals("d")))
-        {
-          result = String(GreenLedData);
-        }
-        else if ((token[1].equals("bz")) && (token[2].equals("d")))
-        {
-          result = String(BuzzerData);
-        }
-        else if (token[1].equals("cl"))
-        {
-          if (token[2].equals("d"))
+          token[1].toLowerCase();
+          token[2].toLowerCase();
+          String result = "";
+          if ((token[1].equals("rl")) && (token[2].equals("d")))
           {
-            result = Clock_Get_Date();
+            result = String(RedLedData);
           }
-          else if (token[2].equals("t"))
+          else if ((token[1].equals("yl")) && (token[2].equals("d")))
           {
-            result = Clock_Get_Time();
+            result = String(YellowLedData);
           }
-          else if (token[2].equals("a"))
+          else if ((token[1].equals("gl")) && (token[2].equals("d")))
           {
-            result = Clock_Get_Alarm1();
+            result = String(GreenLedData);
           }
-          else if (token[2].equals("as"))
+          else if ((token[1].equals("bz")) && (token[2].equals("d")))
           {
-            result = String(Clock_Get_Alarm1_Status());
+            result = String(BuzzerData);
           }
-        }
-        else if (token[1].equals("dht"))
-        {
-          if (token[2].equals("t"))
+          else if (token[1].equals("cl"))
           {
-            result = String(DHT_Get_Temperature());
+            if (token[2].equals("d"))
+            {
+              result = Clock_Get_Date();
+            }
+            else if (token[2].equals("t"))
+            {
+              result = Clock_Get_Time();
+            }
+            else if (token[2].equals("a"))
+            {
+              result = Clock_Get_Alarm1();
+            }
+            else if (token[2].equals("as"))
+            {
+              result = String(Clock_Get_Alarm1_Status());
+            }
           }
-          else if (token[2].equals("h"))
+          else if (token[1].equals("dht"))
           {
-            result = String(DHT_Get_Humidity());
+            if (token[2].equals("t"))
+            {
+              result = String(DHT_Get_Temperature());
+            }
+            else if (token[2].equals("h"))
+            {
+              result = String(DHT_Get_Humidity());
+            }
+            else if (token[2].equals("i"))
+            {
+              result = String(DHT_Get_Heat_Index());
+            }
           }
-          else if (token[2].equals("i"))
+          if (result.length() > 0)
           {
-            result = String(DHT_Get_Heat_Index());
+            UARTSendOK(token[0], result);
           }
-        }
-        if (result.length() > 0)
-        {
-          UARTSendOK(token[0], result);
+          else
+          {
+            UARTSendError("Unknow driver or property", token[1] + " " + token[2]);
+          }
         }
         else
         {
-          UARTSendError("Unknow driver or property", token[1] + " " + token[2]);
+          UARTSendError("Bad parameters", "");
         }
       }
       else
+          //SET driver propery
+          if (token[0].equals("AT+DP"))
       {
-        UARTSendError("Bad parameters", "");
-      }
-    }
-    else 
-    //SET driver propery
-    if (token[0].equals("AT+DP"))
-    {
-      if (count > 3)
-      {
-        
-        token[1].toLowerCase();
-        token[2].toLowerCase();
-        Serial.print(token[1] + " " + token[2]);
-        String result = "";
-        if ((token[1].equals("rl")) && (token[2].equals("d")))
+        if (count > 3)
         {
-          LED_Red_Set_Light(atoi(token[3].c_str()));
-          result = "1"; //1 is success
-        }
-        else if ((token[1].equals("yl")) && (token[2].equals("d")))
-        {
-          LED_Yellow_Set_Light(atoi(token[3].c_str()));
-          result = "1";
-        }
-        else if ((token[1].equals("gl")) && (token[2].equals("d")))
-        {
-          LED_Green_Set_Light(atoi(token[3].c_str()));
-          result = "1";
-        }
-        else if ((token[1].equals("bz")) && (token[2].equals("d")))
-        {
-          BUZZER_Set_sound(atoi(token[3].c_str()));
-          result = "1";
-        }
-        else if (token[1].equals("cl"))
-        {
-          if (token[2].equals("d"))
+
+          token[1].toLowerCase();
+          token[2].toLowerCase();
+          Serial.print(token[1] + " " + token[2]);
+          String result = "";
+          if ((token[1].equals("rl")) && (token[2].equals("d")))
           {
-            result = "0";
+            LED_Red_Set_Light(atoi(token[3].c_str()));
+            result = "1"; //1 is success
           }
-          else if (token[2].equals("t"))
+          else if ((token[1].equals("yl")) && (token[2].equals("d")))
           {
-            result = "0";
-          }
-          else if (token[2].equals("a"))
-          {
-            result = "0";
-          }
-          else if (token[2].equals("as"))
-          {
-            Serial.print(atoi(token[3].c_str()));
-            Clock_Set_Alarm1_Status(atoi(token[3].c_str()));
+            LED_Yellow_Set_Light(atoi(token[3].c_str()));
             result = "1";
           }
-        }
+          else if ((token[1].equals("gl")) && (token[2].equals("d")))
+          {
+            LED_Green_Set_Light(atoi(token[3].c_str()));
+            result = "1";
+          }
+          else if ((token[1].equals("bz")) && (token[2].equals("d")))
+          {
+            BUZZER_Set_sound(atoi(token[3].c_str()));
+            result = "1";
+          }
+          else if (token[1].equals("cl"))
+          {
+            if (token[2].equals("d"))
+            {
+              result = "0";
+            }
+            else if (token[2].equals("t"))
+            {
+              result = "0";
+            }
+            else if (token[2].equals("a"))
+            {
+              result = "0";
+            }
+            else if (token[2].equals("as"))
+            {
+              Serial.print(atoi(token[3].c_str()));
+              Clock_Set_Alarm1_Status(atoi(token[3].c_str()));
+              result = "1";
+            }
+          }
 
-        if (result.length() > 0)
-        {
-          UARTSendOK(token[0], result);
+          if (result.length() > 0)
+          {
+            UARTSendOK(token[0], result);
+          }
+          else
+          {
+            UARTSendError("Unknow driver or property", token[1] + " " + token[2]);
+          }
         }
         else
         {
-          UARTSendError("Unknow driver or property", token[1] + " " + token[2]);
+          UARTSendError("Bad parameters", "");
         }
       }
       else
       {
-        UARTSendError("Bad parameters", "");
+        UARTSendError("unknown command", "");
       }
     }
     else
-    {
-      UARTSendError("unknown command", "");
-    }
-    }
-    else 
     {
       UARTSendError("Bad command", "");
     }
@@ -303,18 +302,45 @@ void UARTLoop()
   {
     SerialInput = "";
     LED_Red_Set_Light(true);
-    delay(200);
+    delay(1000);
     LED_Red_Set_Light(false);
   }
-  else if (Serial.available() > 0)
+  else 
   {
-    String currentStr = Serial.readString();
-    SerialInput += currentStr;
+  int rxSize = Serial.available();
+  if (rxSize > 0)
+  {
+    while (rxSize > 0)
+    {
+              
+       int c = Serial.read();
+       if (c > 0)
+       {
+         SerialInput += (char)c;   
+       }
+
+       rxSize = Serial.available();        
+       if ((rxSize > SERIAL_RX_BUFFER_SIZE / 2) || (SerialInput.length() > SERIAL_RX_BUFFER_SIZE / 2))
+       {
+          int count = 0;
+          while ((Serial.available() > 0) && (count < SERIAL_RX_BUFFER_SIZE))
+          { 
+            wdt_reset();
+            Serial.read(); 
+            delay(5); 
+            count++;
+          } 
+          SerialInput = "";
+          return;
+       }
+
+    
+    
     if (SerialInput.indexOf('\r') != -1)
     {
-
+      
       busy = true;
-      //Serial.flush();
+  
       SerialInput.replace("\r", "");
       SerialInput.replace("\n", "");
       UARTRecv(SerialInput);
@@ -324,5 +350,7 @@ void UARTLoop()
       Serial.clearWriteError();
       busy = false;
     }
+    }
+  }
   }
 }

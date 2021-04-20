@@ -81,6 +81,7 @@ bool AnyKey = false;
 //Значения параметров настройки смотрите в файлы config.h
 void setup()
 {
+  //Отключаем Arduino Watch Dog (работает не со всеми BOOTLoader)
   wdt_disable();
 
   Serial.begin(SERIAL_BAUD); //Устанавливаем скорость UART (Serial)

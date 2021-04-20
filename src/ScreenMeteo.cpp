@@ -54,18 +54,18 @@ OWLOS распространяется в надежде, что она буде
 #include "ScreenMeteo.h"
 #include "SetupSignals.h"
 
-#define AbsoluteZero -273
-int temperature_Save;
-int humidity_Save;
-int light_Save;
-int heat_index_Save;
-String date_Save;
-String time_Save;
+
+int temperature_Save = ABSOLUTE_ZERO;
+int humidity_Save = 101;
+int light_Save = -1;
+int heat_index_Save = -1;
+String date_Save = "";
+String time_Save = "";
 
 //Вызывается когда экран переключен в режимы MODE_METEO или MODE_SET_METEO
 void Screen_Meteo_Init()
 {
-    temperature_Save = AbsoluteZero + -1;
+    temperature_Save = ABSOLUTE_ZERO + -1;
     humidity_Save = 101; //%
     light_Save = -1;
     heat_index_Save = -1;

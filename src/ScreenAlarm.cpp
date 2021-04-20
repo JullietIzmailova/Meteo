@@ -65,7 +65,7 @@ extern int App_Mode;
 #define ALARM_ONOFF 3
 
 RTCAlarmTime editRTC;
-bool editAlarmOnOff;
+bool editAlarmOnOff = false;
 
 extern int currentEdit;
 extern bool blink;
