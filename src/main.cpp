@@ -83,7 +83,14 @@ void setup()
   delay(SETUP_DELAY);        //Даем время соединеному устройству принять новую скорость UART (Serial) (смотрите: config.h)
   Log("Do setup...");
 
-  LCD_Setup();         //Инициализируем дисплей (параметры дисплея и номер порта смотрите config.h)
+  BUZZER_Setup(); //инициализация "пищалки"
+  delay(SETUP_DELAY);
+
+  if(!LCD_Setup())
+  {
+    Setup_Signals_Long_And_Short(NO_LCD_Long_Signals, NO_LCD_Short_Signals, true);
+  }
+           //Инициализируем дисплей (параметры дисплея и номер порта смотрите config.h)
   LCD_Set_Light(true); //Включаем подсветку дисплея
 
   LCDBigNumber_Setup(); //Инициализируем таблицы переопределения симводов дисплея, для прорисовки "больших" цифр
@@ -96,12 +103,11 @@ void setup()
 //интервалом задержки после инициализации каждого подключеного устройства
 #ifdef DEBUG_SETUP
 
-  Buttons_Setup(); //инициализация кнопок
-  LCD_Print_CenterLine2("Buttons setup...OK");
+  LCD_Print_CenterLine2("Buzzer setup...OK");
   delay(DEBUG_SETUP_DELAY);
 
-  BUZZER_Setup(); //инициализация "пищалки"
-  LCD_Print_CenterLine2("Buzzer setup...OK");
+  Buttons_Setup(); //инициализация кнопок
+  LCD_Print_CenterLine2("Buttons setup...OK");
   delay(DEBUG_SETUP_DELAY);
 
   LED_Setup(); //инициализация светодиодов

@@ -4,6 +4,9 @@
 #include <Arduino.h>
 #include "src/libraries/LiquidCrystal_I2C/LiquidCrystal_I2C.h"
 
+#define NO_LCD_Long_Signals 4
+#define NO_LCD_Short_Signals 4
+
 
 bool LCD_Setup();
 
