@@ -3,6 +3,7 @@
 
 bool LCDBigNumber_Setup();
 
+void LCDBigNumber_Print_Height2_Offset(int row, int offset, String number);
 void LCDBigNumber_Print_Height2_Right(int row, String number);
 void LCDBigNumber_Print_Height2_Center(int row, String number);
 void LCDBigNumber_Print_Height2_Left(int row, String number);

@@ -26,6 +26,7 @@ void setup()
   clock.armAlarm2(false);
   clock.clearAlarm1();
   clock.clearAlarm2();
+  clock.setAlarm1(0, 1, 10, 30, DS3231_MATCH_H_M_S);
  
   // Manual (Year, Month, Day, Hour, Minute, Second)
   clock.setDateTime(2014, 4, 25, 0, 0, 0);
@@ -41,7 +42,7 @@ void setup()
   // clock.setAlarm2(0, 0, 0, 0, DS3231_EVERY_MINUTE);
   
   // Set Alarm1 - Every 20s in each minute
-  // setAlarm1(Date or Day, Hour, Minute, Second, Mode, Armed = true)
+  //    setAlarm1(Date or Day, Hour, Minute, Second, Mode, Armed = true)
   clock.setAlarm1(0, 0, 0, 20, DS3231_MATCH_S);
 
   // Set Alarm2 - Every 01m in each hour

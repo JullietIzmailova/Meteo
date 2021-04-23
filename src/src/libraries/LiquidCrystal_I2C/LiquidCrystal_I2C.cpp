@@ -57,18 +57,18 @@ void LiquidCrystal_I2C::oled_init() {
 	init_priv();
 }
 
-void LiquidCrystal_I2C::init() {
-	init_priv();
+uint8_t LiquidCrystal_I2C::init() {
+	return init_priv();
 }
 
-void LiquidCrystal_I2C::init_priv()
+uint8_t LiquidCrystal_I2C::init_priv()
 {
 	Wire.begin();
 	_displayfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS;
-	begin(_cols, _rows);
+	return begin(_cols, _rows);
 }
 
-void LiquidCrystal_I2C::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
+uint8_t LiquidCrystal_I2C::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 	if (lines > 1) {
 		_displayfunction |= LCD_2LINE;
 	}
@@ -85,7 +85,11 @@ void LiquidCrystal_I2C::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 	delay(50);
 
 	// Now we pull both RS and R/W low to begin commands
-	expanderWrite(_backlightval);	// reset expanderand turn backlight off (Bit 8 =1)
+	uint8_t result = expanderWrite(_backlightval);	// reset expanderand turn backlight off (Bit 8 =1)
+	if (result != 0)
+	{
+		return result;
+	}
 	delay(1000);
 
 	//put the LCD into 4 bit mode
@@ -125,6 +129,8 @@ void LiquidCrystal_I2C::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 	command(LCD_ENTRYMODESET | _displaymode);
 
 	home();
+
+	return result;
 
 }
 
@@ -264,10 +270,10 @@ void LiquidCrystal_I2C::write4bits(uint8_t value) {
 	pulseEnable(value);
 }
 
-void LiquidCrystal_I2C::expanderWrite(uint8_t _data) {
+ uint8_t LiquidCrystal_I2C::expanderWrite(uint8_t _data) {
 	Wire.beginTransmission(_Addr);
 	printIIC((int)(_data) | _backlightval);
-	Wire.endTransmission();
+	return Wire.endTransmission();
 }
 
 void LiquidCrystal_I2C::pulseEnable(uint8_t _data) {
