@@ -73,7 +73,6 @@ extern float HeatIndex;
 
 String SerialInput = "\0";
 
-
 bool busy = false;
 
 void UARTSend(String topic, String payload)
@@ -305,52 +304,49 @@ void UARTLoop()
     delay(1000);
     LED_Red_Set_Light(false);
   }
-  else 
+  else
   {
-  int rxSize = Serial.available();
-  if (rxSize > 0)
-  {
-    while (rxSize > 0)
+    int rxSize = Serial.available();
+    if (rxSize > 0)
     {
-              
-       int c = Serial.read();
-       if (c > 0)
-       {
-         SerialInput += (char)c;   
-       }
+      while (rxSize > 0)
+      {
 
-       rxSize = Serial.available();        
-       if ((rxSize > SERIAL_RX_BUFFER_SIZE / 2) || (SerialInput.length() > SERIAL_RX_BUFFER_SIZE / 2))
-       {
+        int c = Serial.read();
+        if (c > 0)
+        {
+          SerialInput += (char)c;
+        }
+
+        rxSize = Serial.available();
+        if ((rxSize > SERIAL_RX_BUFFER_SIZE / 2) || (SerialInput.length() > SERIAL_RX_BUFFER_SIZE / 2))
+        {
           int count = 0;
           while ((Serial.available() > 0) && (count < SERIAL_RX_BUFFER_SIZE))
-          { 
+          {
             wdt_reset();
-            Serial.read(); 
-            delay(5); 
+            Serial.read();
+            delay(5);
             count++;
-          } 
+          }
           SerialInput = "";
           return;
-       }
+        }
 
-    
-    
-    if (SerialInput.indexOf('\r') != -1)
-    {
-      
-      busy = true;
-  
-      SerialInput.replace("\r", "");
-      SerialInput.replace("\n", "");
-      UARTRecv(SerialInput);
-      SerialInput = "";
+        if (SerialInput.indexOf('\r') != -1)
+        {
+          busy = true;
 
-      Serial.flush();
-      Serial.clearWriteError();
-      busy = false;
+          SerialInput.replace("\r", "");
+          SerialInput.replace("\n", "");
+          UARTRecv(SerialInput);
+          SerialInput = "";
+
+          Serial.flush();
+          Serial.clearWriteError();
+          busy = false;
+        }
+      }
     }
-    }
-  }
   }
 }
