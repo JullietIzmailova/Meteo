@@ -27,9 +27,10 @@ Estimated hardware budget 20$
 
 ### UART based console monitor
 ![UART based console monitor](https://github.com/KirinDenis/Meteo/raw/main/resources/gallery/UARTSmall.jpg)
+
                                                         
-### We use PlatformIO IDE
-https://platformio.org/
+### We use [PlatformIO IDE](https://platformio.org/)
+
 
 ### Special thanks to:
 
@@ -50,3 +51,7 @@ https://platformio.org/
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 - Serhii Lehkii (sergey@light.kiev.ua)
+
+[Development process](https://www.youtube.com/watch?v=Btf__LAYvKo)
+
+
