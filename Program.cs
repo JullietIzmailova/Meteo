@@ -41,16 +41,18 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 using System;
+using System.Collections.Generic;
 using System.IO.Ports;
+using System.Linq;
 using System.Threading;
 
 namespace Meteo
 {
     public class Program
     {
-        private static readonly int baudRate = 9600;
+        private static readonly int baudRate = 115200;
         private static string buffer = string.Empty;
-        private static readonly int interval = 1500;
+        private static readonly int interval = 10000;
         private static void Main(string[] args)
         {
             Console.WindowWidth = 80;
@@ -64,7 +66,8 @@ namespace Meteo
 
             SerialPort serialPort = new SerialPort
             {
-                BaudRate = baudRate
+                BaudRate = baudRate,
+                RtsEnable = true
             };
             for (int i = 1; i < 24; i++)
             {
@@ -96,28 +99,16 @@ namespace Meteo
             else
             {
                 Console.Clear();
-                WriteLine("                          --=== OWLOS Meteo UART ===--                         ", ConsoleColor.Yellow, ConsoleColor.Blue);
-                WriteLine("OWLOS Meteo at " + serialPort.PortName, ConsoleColor.Green);
+                WriteLine("                          --=== OWLOS Meteo UART ===--                          ", ConsoleColor.Yellow, ConsoleColor.Blue);
+                WriteLine("OWLOS Meteo at " + serialPort.PortName + " (" + serialPort.BaudRate +")", ConsoleColor.Green);
+                WriteLine("Waiting for a data... ", 0, 3, ConsoleColor.Yellow);
                 while (true)
                 {
                     if (serialPort.IsOpen)
                     {
                         try
-                        {
-                            WriteLine("TX->AT+L?", 0, 7);
-                            serialPort.Write("AT+L?\n");
-                            Thread.Sleep(interval);
-
-                            WriteLine("TX->AT+T?", 0, 7);
-                            serialPort.Write("AT+T?\n");
-                            Thread.Sleep(interval);
-
-                            WriteLine("TX->AT+H?", 0, 7);
-                            serialPort.Write("AT+H?\n");
-                            Thread.Sleep(interval);
-
-                            WriteLine("TX->AT+I?", 0, 7);
-                            serialPort.Write("AT+I?\n");
+                        {                         
+                            serialPort.WriteLine("AT+ADP?" + "\n\r");
                             Thread.Sleep(interval);
                         }
                         catch { }
@@ -173,45 +164,152 @@ namespace Meteo
             string data = sp.ReadExisting();
 
             buffer = buffer + data;
-            WriteLine("RX<-" + buffer + "                      ", 0, 8);
+        //    WriteLine("RX<-" + buffer + "                      ", 0, 8);
 
             try
             {
-                if (buffer.IndexOf("\r") != -1)
+                if (buffer.IndexOf("\n\n") != -1)
                 {
-                    if (buffer.IndexOf("OK AT+L? ") == 0)
+                    if (buffer.IndexOf("OK: AT+ADP?") == 0)
                     {
-                        if (ParseFloatFromRx(buffer, out float light))
+                        List<string> driverRaw = buffer.Split('\n').ToList();
+
+                        string driverName = string.Empty;
+
+                        foreach (string driverProp in driverRaw)
                         {
-                            WriteLine("Light sensor: ", 0, 3, ConsoleColor.Yellow);
-                            WriteLine(light.ToString(), 15, 3, ConsoleColor.White);
-                        }
-                    }
-                    else
-                    if (buffer.IndexOf("OK AT+I? ") == 0)
-                    {
-                        if (ParseFloatFromRx(buffer, out float heat))
-                        {
-                            WriteLine("Heat index: ", 0, 4, ConsoleColor.Yellow);
-                            WriteLine(heat.ToString(), 15, 4, ConsoleColor.White);
-                        }
-                    }
-                    else
-                    if (buffer.IndexOf("OK AT+T? ") == 0)
-                    {
-                        if (ParseFloatFromRx(buffer, out float temperature))
-                        {
-                            WriteLine("Temperature sensor: ", 45, 3, ConsoleColor.Yellow);
-                            WriteLine(temperature.ToString(), 65, 3, ConsoleColor.White);
-                        }
-                    }
-                    else
-                    if (buffer.IndexOf("OK AT+H? ") == 0)
-                    {
-                        if (ParseFloatFromRx(buffer, out float humidity))
-                        {
-                            WriteLine("Humidity sensor: ", 45, 4, ConsoleColor.Yellow);
-                            WriteLine(humidity.ToString(), 65, 4, ConsoleColor.White);
+                            //find driver
+                            if ((driverProp.IndexOf("properties for:") != -1) || (driverProp.IndexOf("PF:") != -1))
+                            {
+                                driverName = driverProp.Substring(driverProp.IndexOf(":") + 1);
+                            }
+                            else
+                            {
+                                if (driverProp.IndexOf("=") != -1)
+                                {
+                                    string key = driverProp.Substring(0, driverProp.IndexOf("="));
+                                    string value = driverProp.Substring(driverProp.IndexOf("=") + 1);
+                                    value = value.Substring(0, value.IndexOf("//"));
+
+                                    if (driverName.Equals("RL"))
+                                    {
+                                        if (key.Equals("d"))
+                                        {
+                                            WriteLine("Red led:                          ", 0, 3, ConsoleColor.White);
+                                            if (value.Equals("1"))
+                                            {
+                                                WriteLine("On", 15, 3, ConsoleColor.Red);
+                                            }
+                                            else
+                                            {
+                                                WriteLine("Off", 15, 3, ConsoleColor.Gray);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    if (driverName.Equals("YL"))
+                                    {
+                                        if (key.Equals("d"))
+                                        {
+                                            WriteLine("Yellow led: ", 0, 4, ConsoleColor.White);
+                                            if (value.Equals("1"))
+                                            {
+                                                WriteLine("On", 15, 4, ConsoleColor.Yellow);
+                                            }
+                                            else
+                                            {
+                                                WriteLine("Off", 15, 4, ConsoleColor.Gray);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    if (driverName.Equals("GL"))
+                                    {
+                                        if (key.Equals("d"))
+                                        {
+                                            WriteLine("Green led: ", 0, 5, ConsoleColor.White);
+                                            if (value.Equals("1"))
+                                            {
+                                                WriteLine("On", 15, 5, ConsoleColor.Green);
+                                            }
+                                            else
+                                            {
+                                                WriteLine("Off", 15, 5, ConsoleColor.Gray);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    if (driverName.Equals("BZ"))
+                                    {
+                                        if (key.Equals("d"))
+                                        {
+                                            WriteLine("Buzzer: ", 0, 6, ConsoleColor.White);
+                                            if (value.Equals("1"))
+                                            {
+                                                WriteLine("On", 15, 6, ConsoleColor.White);
+                                            }
+                                            else
+                                            {
+                                                WriteLine("Off", 15, 6, ConsoleColor.Gray);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    if (driverName.Equals("CL"))
+                                    {
+                                        if (key.Equals("t"))
+                                        {
+                                            WriteLine("Time: ", 22, 3, ConsoleColor.White);
+                                            WriteLine(value, 37, 3, ConsoleColor.Gray);
+                                        }
+                                        else
+                                        if (key.Equals("d"))
+                                        {
+                                            WriteLine("Date: ", 22, 4, ConsoleColor.White);
+                                            WriteLine(value, 37, 4, ConsoleColor.Gray);
+                                        }
+                                        else
+                                        if (key.Equals("a"))
+                                        {
+                                            WriteLine("Alarm: ", 22, 5, ConsoleColor.White);
+                                            WriteLine(value, 37, 5, ConsoleColor.Gray);
+                                        }
+                                        else
+                                        if (key.Equals("as"))
+                                        {
+                                            WriteLine("Alarm status ", 22, 6, ConsoleColor.White);
+                                            if (value.Equals("1"))
+                                            {
+                                                WriteLine("On", 37, 6, ConsoleColor.Green);
+                                            }
+                                            else
+                                            {
+                                                WriteLine("Off", 37, 6, ConsoleColor.Red);
+                                            }
+                                        }
+                                    }
+                                    if (driverName.Equals("DHT"))
+                                    {
+                                        if (key.Equals("t"))
+                                        {
+                                            WriteLine("Temperature: ", 50, 3, ConsoleColor.White);
+                                            WriteLine(value, 65, 3, ConsoleColor.Gray);
+                                        }
+                                        else
+                                        if (key.Equals("h"))
+                                        {
+                                            WriteLine("Humidity: ", 50, 4, ConsoleColor.White);
+                                            WriteLine(value, 65, 4, ConsoleColor.Gray);
+                                        }
+                                        else
+                                        if (key.Equals("i"))
+                                        {
+                                            WriteLine("Heat Index: ", 50, 5, ConsoleColor.White);
+                                            WriteLine(value, 65, 5, ConsoleColor.Gray);
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                     buffer = string.Empty;
