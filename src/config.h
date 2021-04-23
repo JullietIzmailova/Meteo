@@ -43,19 +43,21 @@ OWLOS распространяется в надежде, что она буде
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define SERIAL_BAUD 9600 //скорость UART (Serial)
-#define SETUP_DELAY 1000  //задержка процедуры Setup() после инициализации UART (Serial)
+#define ABSOLUTE_ZERO -273
+
+#define SERIAL_BAUD 115200 //скорость UART (Serial)
+#define SETUP_DELAY 10  //задержка процедуры Setup() после инициализации UART (Serial)
 #define LOGO_DELAY 1500  //интервал задержки Logo Screen при загрузки
 
 #define DEBUG_SETUP  //включает отладочный режим процедуры Setup()
 #define DEBUG_SETUP_DELAY 100  //интервал задержки этапов инциализации (задержки между секциями процедуры Setup())
 
-#define MAIN_LOOP_DELAY 10 //задержка процедуры Loop() после очередной итерации (чем значение больше, тем контроллер менее нагружен, но "хуже" реагирует на события)
+#define MAIN_LOOP_DELAY 20 //задержка процедуры Loop() после очередной итерации (чем значение больше, тем контроллер менее нагружен, но "хуже" реагирует на события)
 
 //MAIN_LOOP_COUNT_LIMIT - колличество итераций Loop() после которого будут обновлены данные на экране.
 //Этот праметр работает в паре с MAIN_LOOP_DELAY -> MAIN_LOOP_COUNT_LIMIT * MAIN_LOOP_DELAY = время в миллисекундах по истечению которого перерисовываеться изображение
 //на экране. Если > 1 секунды (1000 миллисекунд) будет задержка в прорисовке секунд (проскальзывание), при этом слишком маленький интервал нагружает контроллер. 
-#define MAIN_LOOP_COUNT_LIMIT 20 
+#define MAIN_LOOP_COUNT_LIMIT 50 
 
 //Настройка времени ожидания нажатия кнопок
 #define BUTTON_SHORTPRESS_LIMIT 10 //количество итераций Loop() после которого считается что кнопка была нажата (короткое нажатие) BUTTON_SHORTPRESS_LIMIT * MAIN_LOOP_DELAY

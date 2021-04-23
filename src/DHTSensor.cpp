@@ -46,6 +46,10 @@ OWLOS распространяется в надежде, что она буде
 
 DHT *dht = nullptr;
 
+float Temperature = ABSOLUTE_ZERO;
+float Humidity = 101;
+float HeatIndex = -1;
+
 //true если сенсор доступен
 //false если сенсор не доступен
 bool DHT_Setup()
@@ -80,15 +84,18 @@ bool DHT_Get_Status()
 
 float DHT_Get_Temperature()
 {
-  return dht->readTemperature();    
+  Temperature = dht->readTemperature();
+  return Temperature;    
 }
 
 float DHT_Get_Humidity()
 {
-  return dht->readHumidity();  
+  Humidity = dht->readHumidity();
+  return Humidity;  
 }
 
 float DHT_Get_Heat_Index()
 {
-  return dht->computeHeatIndex(false);
+  HeatIndex = dht->computeHeatIndex(false);
+  return HeatIndex;
 }
