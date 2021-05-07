@@ -100,7 +100,7 @@ float LIGHT_GET_data()
 #endif
 
 #ifndef LIGHT_SENSOR_ANALOG_PIN    
-    if(LIGHT_SENSOR_DIGITAL_PIN!=1){
+    if(LIGHT_SENSOR_DIGITAL_PIN!=-1){
         if(digitalRead(LIGHT_SENSOR_DIGITAL_PIN)==HIGH){
             return 1;
         }
