@@ -301,7 +301,7 @@ void UARTLoop()
   {
     SerialInput = "";
     LED_Red_Set_Light(true);
-    delay(1000);
+    delay(10);
     LED_Red_Set_Light(false);
   }
   else
