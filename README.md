@@ -6,6 +6,8 @@
 
 ### For all who learning firmware programming.
 
+![OWLOSMeteo](https://github.com/KirinDenis/Meteo/raw/main/resources/gallery/OWLOSMeteo.gif)
+
 ### Parts used:
 - Arduino UNO R3 (CH340)
 - Arduino Sensor Shield V4.0
