@@ -8,7 +8,7 @@
 
 ![OWLOSMeteo](https://github.com/KirinDenis/Meteo/raw/main/resources/gallery/OWLOSMeteo.gif)
 
-![OWLOSMeteo2](https://media0.giphy.com/media/YC40OkuGV72TB8ORJ9/giphy.gif?cid=790b76118d396b9374e183937be2b4b73c9e1d66112424dd&rid=giphy.gif&ct=g)
+![OWLOSMeteo2](https://github.com/KirinDenis/Meteo/blob/main/resources/gallery/OWLOSMeteo2.gif)
 
 ### Parts used:
 - Arduino UNO R3 (CH340)
